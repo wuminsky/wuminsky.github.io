@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>React v16.3 小记</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>React v16.3 小记</h1><h2 class="headline">Jun 16 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#新的生命周期"><span class="toc-text">新的生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#生命周期变化"><span class="toc-text">生命周期变化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么要改"><span class="toc-text">为什么要改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#react异步渲染"><span class="toc-text">react异步渲染</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#迁移路径"><span class="toc-text">迁移路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#新的生命周期-1"><span class="toc-text">新的生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#static-getDerivedStateFromProps"><span class="toc-text">static getDerivedStateFromProps</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#getSnapshotBeforeUpdate"><span class="toc-text">getSnapshotBeforeUpdate</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#生命周期完整视图"><span class="toc-text">生命周期完整视图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新的-Context-API"><span class="toc-text">新的 Context API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#旧版的缺陷"><span class="toc-text">旧版的缺陷</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重生的-Context-API"><span class="toc-text">重生的 Context API</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新的-Ref-API"><span class="toc-text">新的 Ref API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#createRef-Api"><span class="toc-text">createRef Api</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#forwardRef-Api"><span class="toc-text">forwardRef Api</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#StrictMode-和-AsyncMode"><span class="toc-text">StrictMode 和 AsyncMode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol></div><section id="post-body"><h2 id="新的生命周期"><a href="#新的生命周期" class="headerlink" title="新的生命周期"></a>新的生命周期</h2><h4 id="生命周期变化"><a href="#生命周期变化" class="headerlink" title="生命周期变化"></a>生命周期变化</h4><p>React v16.3 最大的变动莫过于生命周期。</p>
+<p>废弃的生命周期：</p>
+<ul>
+<li><strong>componentWillMount</strong></li>
+<li><strong>componentWillReceiveProps</strong></li>
+<li><strong>componentWillUpdate</strong></li>
+</ul>
+<p>新增的生命周期：</p>
+<ul>
+<li><strong>getDerivedStateFromProps</strong></li>
+<li><strong>getSnapshotBeforeUpdate</strong></li>
+</ul>
+<p>变更的生命周期：</p>
+<ul>
+<li><strong>componentDidUpdate</strong> 增加第三个参数 snapshot</li>
+</ul>
+<h4 id="为什么要改"><a href="#为什么要改" class="headerlink" title="为什么要改"></a>为什么要改</h4><p>旧的生命周期十分完整，基本可以捕捉到组件更新的每一个 state 和 props 的变化，没有什么逻辑上的毛病。</p>
+<p>根据官方的说法，React v17 计划推出异步渲染，渲染过程可能被打断，而可以被打断的阶段正是实际 DOM 挂载之前的虚拟 DOM 构建阶段，被去掉的三个生命周期便在其中。</p>
+<p>渲染过程一旦被打断，下次恢复的时候又会再跑一次之前的生命周期，<strong>componentWillMount</strong>，<strong>componentWillReceiveProps</strong>， <strong>componentWillUpdate</strong> 都不能保证只在挂载 / 接收 props / state 变化的时候执行一次了，所以这三个方法被标记为不安全。</p>
+<h4 id="react异步渲染"><a href="#react异步渲染" class="headerlink" title="react异步渲染"></a>react异步渲染</h4><p>在 React v16 之前，组件的渲染都是同步进行的，也就是说从 <strong>constructor</strong> 开始到 <strong>componentDidUpdate</strong> 结束，React 的运行都是没有中断的，生命周期开始之后就会运行到其结束为止。</p>
+<p>这样带来的一个缺点就是，如果组件嵌套很深，渲染时间增长了之后，一些重要的高优先级的操作就会被阻塞，例如用户的输入、滚动事件等，这样就会造成体验上的不友好。</p>
+<p>在之后即将到来的异步渲染机制中，会允许首先解决高优先级的任务，同时会暂停当前的渲染任务，当高优先级的任务结束之后，再返回继续运行当前任务，这样会大大的提高 React 应用的流畅度，给用户带来更好的体验。</p>
+<h4 id="迁移路径"><a href="#迁移路径" class="headerlink" title="迁移路径"></a>迁移路径</h4><ol>
+<li>16.3：为不安全生命周期引入别名 <strong>UNSAFE_componentWillMount</strong>，<strong>UNSAFE_componentWillReceiveProps</strong> 和 <strong>UNSAFE_componentWillUpdate</strong>。（旧的生命周期名称和其”UNSAFE_”别名都可以在此版本中使用。）</li>
+<li>16.x：为 <strong>componentWillMount</strong>，<strong>componentWillReceiveProps</strong> 和 <strong>componentWillUpdate</strong> 启用弃用警告。（旧的生命周期名称和”UNSAFE_”别名都可以在此版本中使用，但旧名称会记录DEV模式警告。）</li>
+<li>17.0：删除 <strong>componentWillMount</strong>，<strong>componentWillReceiveProps</strong> 和 <strong>componentWillUpdate</strong>。（从现在开始，只有新的”UNSAFE_”生命周期名称将起作用。）</li>
+</ol>
+<h4 id="新的生命周期-1"><a href="#新的生命周期-1" class="headerlink" title="新的生命周期"></a>新的生命周期</h4><h5 id="static-getDerivedStateFromProps"><a href="#static-getDerivedStateFromProps" class="headerlink" title="static getDerivedStateFromProps"></a><a href="https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops" target="_blank" rel="noopener">static getDerivedStateFromProps</a></h5><p>触发时间：在组件实例化之后 ，以及每次接收新的 props 之后。注意前面的 static，这意味着在这个函数中我们不能使用 this，更不能调用 this.setState。而该方法的返回值将用于更新 state，如果不需要更新 state，就返回 null。配合 <strong>componentDidUpdate</strong>，基本可以覆盖 <strong>componentWillReceiveProps</strong> 的所有用法。</p>
+<pre><code class="javascript">static getDerivedStateFromProps(nextProps, prevState) {
+  if (nextProps.text === prevState.text) return null;
+  return { text: nextProps.text }; // 相当于 this.setState({ text: nextProps.text });
+}
+</code></pre>
+<p>一些注意事项：</p>
+<ul>
+<li><strong>getDerivedStateFromProps</strong> 在第一次挂载和重绘的时候都会被调用。因此基本不用在 <strong>constructor</strong> 里根据传入的 props 来 setState 设置初始的 state。</li>
+<li>如果定义了 <strong>getDerivedStateFromProps</strong> 后，又定义了 <strong>componentWillReceiveProps</strong>。那么，只有前者会被调用，并且你会收到一个警告。</li>
+<li>有时候会在 setState 里传入回调来保证某些代码在 state 更新之后才被调用的。现在可以把这些代码移到 <strong>componentDidUpdate</strong> 里。</li>
+</ul>
+<h5 id="getSnapshotBeforeUpdate"><a href="#getSnapshotBeforeUpdate" class="headerlink" title="getSnapshotBeforeUpdate"></a>getSnapshotBeforeUpdate</h5><p>触发时间: 组件更新之前会被调用，在 render 函数之后，在实际DOM渲染之前。它返回一个值，作为 <strong>componentDidUpdate</strong> 的第三个参数。配合 <strong>componentDidUpdate</strong>，基本可以覆盖 <strong>componentWillUpdate</strong> 的所有用法。</p>
+<p>如下，用于在重绘期间手动保存滚动位置：</p>
+<pre><code class="javascript">class ScrollingList extends React.Component {
+  listRef = null;
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+        // 获取先前的滚动位置待后续使用
+    if (prevProps.list.length &lt; this.props.list.length) {
+      return (
+        this.listRef.scrollHeight - this.listRef.scrollTop
+      );
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // snapshot 为 getSnapshotBeforeUpdate 的返回值
+    if (snapshot !== null) {
+      this.listRef.scrollTop =
+        this.listRef.scrollHeight - snapshot;
+    }
+  }
+
+  render() {
+    return (
+      `&lt;div&gt;`
+        {/* ...contents... */}
+      `&lt;/div&gt;`
+    );
+  }
+
+  setListRef = ref =&gt; {
+    this.listRef = ref;
+  };
+}
+</code></pre>
+<h4 id="生命周期完整视图"><a href="#生命周期完整视图" class="headerlink" title="生命周期完整视图"></a>生命周期完整视图</h4><p><img src="https://s1.ax1x.com/2018/09/11/ikM0df.png" alt="React lifecycle"></p>
+<h2 id="新的-Context-API"><a href="#新的-Context-API" class="headerlink" title="新的 Context API"></a>新的 Context API</h2><p>我们都知道在 React 中父子组件可以通过 props 自顶向下的传递数据。但是当组件深度嵌套时，从顶层组件向最内层组件传递数据就不那么方便了。手动在每一层组件上逐级传递 props 不仅书写起来很繁琐同时还会为夹在中间的组件引入不必要的 props。</p>
+<h4 id="旧版的缺陷"><a href="#旧版的缺陷" class="headerlink" title="旧版的缺陷"></a>旧版的缺陷</h4><p> <strong>Context API</strong> 能帮助我们缩短父组件到子组件的数据传递路径。</p>
+<p>首先在父组件上声明要传递给子组件的 context</p>
+<pre><code class="javascript">const PropTypes = require(&#39;prop-types&#39;);
+
+class MessageList extends React.Component {
+   constructor(props) {
+    super(props);
+    this.state = { color:&#39;yellow&#39; };
+  }
+
+  updateContext() {
+    this.setState({ color: &#39;pink&#39; });
+  }
+
+  getChildContext() {
+    return { color: this.state.color };
+  }
+
+  render() {
+    const children = this.props.messages.map((message) =&gt;
+      &lt;Message text={message.text} /&gt;
+    );
+    return &lt;div&gt;{children}&lt;/div&gt;;
+  }
+}
+
+MessageList.childContextTypes = {
+  color: PropTypes.string
+};
+</code></pre>
+<p>然后从子孙组件访问 context</p>
+<pre><code class="javascript">const PropTypes = require(&#39;prop-types&#39;);
+
+class Message extends React.Component {
+  render() {
+    return (
+      &lt;div&gt;
+        {this.props.text}
+          &lt;Button&gt;Delete&lt;/Button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+class Button extends React.Component {
+  render() {
+    return (
+      &lt;button style={{ background: this.context.color }}&gt;
+        {this.props.children}
+      &lt;/button&gt;
+    );
+  }
+}
+
+Button.contextTypes = {
+  color: PropTypes.string
+};
+</code></pre>
+<p>通过将 <strong>childContextTypes</strong> 和 <strong>getChildContext</strong> 添加到 MessageList (context 提供者)，React 会自动地向下传递数据。之后子树中的任何组件（这个例子中的 Button）都可以通过定义 contextTypes 去访问它。</p>
+<p><strong>getChildContext</strong> 函数将会在每次 state 或者 props 改变时调用，为了更新 context 中的数据，可以使用 this.setState 触发本地状态的更新。但在组件树中，如果中间某一个组件的 <strong>ShouldComponentUpdate</strong> return false 了，就会阻碍 context 的正常传值，导致子组件无法更新。</p>
+<p>那么有没有方案可以让现有 Context API 和 shouldComponetUpdate 完美配合呢？答案是有的，<a href="https://medium.com/@mweststrate/how-to-safely-use-react-context-b7e343eff076" target="_blank" rel="noopener">这篇文章</a>里有详细的讨论。但该方案属于较 hack 的方式，对新手不太友好。React 的官方文档里也不建议我们使用现有的 Context API。</p>
+<blockquote>
+<p>The vast majority of applications do not need to use context.If you want your application to be stable, don’t use context. It is an experimental API and it is likely to break in future releases of React.</p>
+</blockquote>
+<p>所以在更多时候我们会使用 Redux 或 Mobx 这样的第三方库来管理状态，它们允许你在任何地方从 store 获取数据，你需要做的只是使用 <provider> 包装一下，然后就可以神奇地在被 connected 的组件中轻松地获取想要的数据了。但实际上，这些库的底层正是使用了 Context API 来实现的。</provider></p>
+<h4 id="重生的-Context-API"><a href="#重生的-Context-API" class="headerlink" title="重生的 Context API"></a>重生的 Context API</h4><p>现在，React v16.3 带来了船新版本的 <strong>Context API</strong>，它提供了一个更简洁的管理全局状态的方式。</p>
+<p>将上面的例子用新版 API 重写：</p>
+<p>传入默认值，用 <strong>React.createContext</strong> 创建一个 context 实例，它含有 <strong>Provider</strong> 和 <strong>Consumer</strong> 两个组件。</p>
+<pre><code class="javascript">import React from &#39;react&#39;;
+import ReactDOM from &#39;react-dom&#39;;
+
+const ThemeContext = React.createContext({
+  color: &#39;yellow&#39;
+});
+
+const { Provider, Consumer } = ThemeContext;
+</code></pre>
+<p><strong>Provider</strong> 组件用于将 context 数据传给该组件树下的所有组件 value 属性是 context 的内容。这是不是很像 react-redux 里的 <strong>Provider</strong> 组件？</p>
+<pre><code class="javascript">class MessageList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {color:&#39;yellow&#39;};
+  }
+
+  updateContext() {
+    this.setState({color: &#39;pink&#39;});
+  }
+
+  render() {
+    const children = this.props.messages.map((message) =&gt;
+      &lt;Message text={message.text} /&gt;
+    );
+    return (
+        &lt;Provider value={{color: this.state.color}}&gt;
+          &lt;div&gt;{children}&lt;/div&gt;
+        &lt;/Provider&gt;
+    );
+  }
+}
+</code></pre>
+<p>而要使用 context 的数据时，我们需要使用 <strong>Consumer</strong> 组件。</p>
+<pre><code class="javascript">class Button extends React.Component {
+  render() {
+    return (
+      &lt;Consumer&gt;
+        {context =&gt; (
+          &lt;button style={{background: context.color}}&gt;
+            {this.props.children}
+          &lt;/button&gt;
+            )}
+      &lt;/Consumer&gt;
+    );
+  }
+}
+</code></pre>
+<p>下面结合代码来说一说新版 Context API 的几个特点：</p>
+<ul>
+<li><strong>Provider</strong> 和 <strong>Consumer</strong> 必须来自同一次 <strong>React.createContext</strong> 调用。也就是说 AContext.Provider 和 BContext.Consumer 是无法搭配使用的。</li>
+<li><strong>Provider</strong> 组件的 value props 值发生变更时，其内部组件树中对应的 <strong>Consumer</strong> 组件会接收到新值并重新渲染，且不受 shouldComponentUpdete 方法的影响。</li>
+<li>当 <strong>Consumer</strong> 外层没有对应的 <strong>Provider</strong> 时就会使用 React.createContext 方法接收的参数作为该 context 的值。</li>
+<li><strong>Consumer</strong> 组件接收一个函数作为 children prop 并利用该函数的返回值生成组件树的模式被称为 <strong>Render Props</strong> 模式。</li>
+<li><strong>Consumer</strong> 下不能写其它内容，比如 <code>&lt;Consumer&gt;color: {context =&gt; &lt;p&gt;{context.color}&lt;/p&gt;}&lt;/Consumer&gt;</code>。</li>
+</ul>
+<p>总之，新的 <strong>Context API</strong> 非常高效并且支持静态类型检查和深度更新，看起来更加的“用户友好”了。当你不想使用 redux、mobx 的时候，可以选择它来实现更简单的跨级状态管理。</p>
+<h2 id="新的-Ref-API"><a href="#新的-Ref-API" class="headerlink" title="新的 Ref API"></a>新的 Ref API</h2><h4 id="createRef-Api"><a href="#createRef-Api" class="headerlink" title="createRef Api"></a>createRef Api</h4><p>有时候会不可避免的需要使用组件中的一些 DOM节 点，比如管理聚焦，选择或者动画。<br>React 提供了 refs 作为一种方式去解决这个问题，有两种形式去管理 refs：字符串 API 和回调函数 API。<br>字符串的方式虽然简洁，但考虑到未来会支持的异步模式，官方通常是建议使用回调函数。</p>
+<p>而在 React v16.3 中提供了一个新的 API 去管理 refs，它兼顾了字符串和回调函数的优点。</p>
+<pre><code class="javascript">class MyComponent extends React.Component{
+        inputRef = React.createRef()
+
+    render(){
+        return &lt;input type=&quot;text&quot; ref={this.inputRef} /&gt;
+    }
+
+    componentDidMount(){
+        this.inputRef.current.focus()
+    }
+}
+</code></pre>
+<p>注意：在v16.3版本前，我们可以直接通过变量访问 DOM 节点的方法，在v16.3后，我们则需要通过 this.inputRef.current，即真实的DOM是通过 current 属性来引用的。</p>
+<h4 id="forwardRef-Api"><a href="#forwardRef-Api" class="headerlink" title="forwardRef Api"></a>forwardRef Api</h4><p>高阶组件 (or HOCs) 是在组件间复用的代码的常用方法。基于之前 <strong>Context API</strong> 的例子，创建了高阶组件 withTheme，它以 props 的方式将 ThemeContext 的数据注入到子组件。</p>
+<pre><code class="javascript">function withTheme(Component) {
+  return function ThemedComponent(props) {
+    return (
+      &lt;ThemeContext.Consumer&gt;
+        {theme =&gt; &lt;Component {...props} theme={theme} /&gt;}
+      &lt;/ThemeContext.Consumer&gt;
+    )
+  }
+}
+</code></pre>
+<p>我们可以使用上面的 withTheme 将组件直接连接到 ThemeContext，而不直接在组件中引入 <strong>Consumer</strong>。</p>
+<pre><code class="javascript">class Button extends React.Component {
+  buttonRef = React.createRef()
+
+  focus = () =&gt; {
+    this.buttonRef.current.focus()
+  }
+
+  render() {
+    const { color, onClick } = this.props
+    return (
+      &lt;button
+        style={{background: color}}
+        ref={this.buttonRef}&gt;
+          onClick={onClick}
+      &gt;
+        {this.props.children}
+      &lt;/button&gt;
+    );
+  }
+}
+
+const ThemedButton = withTheme(Button);
+
+class Message extends React.Component {
+  themedButtonRef = React.createRef()
+
+    handleClick = () =&gt; {
+    this.themedButtonRef.focus() // Don&#39;t work
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        {this.props.text}
+        &lt;ThemedButton
+          onClick={this.handleClick}
+              ref={this.themedButtonRef}
+        &gt;
+           Delete
+        &lt;/ThemedButton&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+</code></pre>
+<p>高阶组件通常将会把 props 传递给包裹着的组件。不幸的是，refs 不会被传递。这意味着，如果使用 ThemedButton，我们不能将 themedButtonRef 和 Button 进行连接，因此也无法调用它的 focus()。</p>
+<p>新的 <strong>forwardRef API</strong> 则解决了这个问题，它提供了一个方法来拦截 ref，并将它作为了普通的 props 进行传递，以便调用子组件的 ref。</p>
+<pre><code class="javascript">function withTheme(Component) {
+  function ThemedComponent({forwardedRef, ...rest}) {
+    return (
+      &lt;ThemeContext.Consumer&gt;
+        {theme =&gt; (
+          &lt;Component
+            {...rest}
+            ref={forwardedRef}
+            theme={theme}
+          /&gt;
+        )}
+      &lt;/ThemeContext.Consumer&gt;
+    )
+  }
+
+  return React.forwardRef((props, ref) =&gt; (
+    &lt;ThemedComponent {...props} forwardedRef={ref} /&gt;
+  ));
+}
+</code></pre>
+<h2 id="StrictMode-和-AsyncMode"><a href="#StrictMode-和-AsyncMode" class="headerlink" title="StrictMode 和 AsyncMode"></a>StrictMode 和 AsyncMode</h2><p>v16.3 的严格模式能为其子组件激活额外的检查和警告，暴露潜在问题，来确保你的代码是按照最佳实践开发的。</p>
+<pre><code class="javascript">import React, { StrictMode } from &#39;react&#39;;
+
+class App extends React.Component {
+  render() {
+    return (
+      &lt;StrictMode&gt;
+        &lt;Header /&gt;
+        &lt;Main /&gt;
+        &lt;Footer /&gt;
+      &lt;/StrictMode&gt;
+    );
+  }
+}
+</code></pre>
+<p><img src="https://s1.ax1x.com/2018/09/11/ikMaLt.png" alt="warning"></p>
+<p>在 v16.3 版本中，<strong>StrictMode</strong> 帮助:</p>
+<ol>
+<li>识别不安全的生命周期。</li>
+<li>字符串 <strong>refs API</strong> 警告。</li>
+<li>检测意想不到的副作用。</li>
+<li>旧版的 <strong>Context API</strong> 警告。</li>
+</ol>
+<p>尽管在严格模式下不可能捕获所有的问题，但在它在大多数情况下还是很有用的。</p>
+<p>异步模式组件在 <strong>React.unsafe_AsyncMode</strong> 下，用于未来将支持的异步渲染。<br>使用 <strong>AsncyMode</strong> 同时也会打开 <strong>StrictMode</strong>，触发警告。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://github.com/reactjs/rfcs/blob/master/text/0006-static-lifecycle-methods.md" target="_blank" rel="noopener">rfcs/0006-static-lifecycle-methods.md at master · reactjs/rfcs</a></li>
+<li><a href="https://5abc31d8be40f1556f06c4be--reactjs.netlify.com/docs/context.html" target="_blank" rel="noopener">Context - React</a></li>
+<li><a href="https://medium.com/@mweststrate/how-to-safely-use-react-context-b7e343eff076" target="_blank" rel="noopener">How to safely use react context</a></li>
+<li><a href="https://reactjs.org/docs/render-props.html" target="_blank" rel="noopener">Render Props - React</a></li>
+<li><a href="https://reactjs.org/docs/strict-mode.html" target="_blank" rel="noopener">Strict Mode - React</a></li>
+<li><a href="https://reactjs.org/blog/2018/03/29/react-v-16-3.html" target="_blank" rel="noopener">React v16.3.0: New lifecycles and context API</a></li>
+<li><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html" target="_blank" rel="noopener">Update on Async Rendering</a></li>
+</ul>
+</section><nav id="post-nav"><span class="prev"><a href="/聊聊富文本编辑器/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/React-v16-小记/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

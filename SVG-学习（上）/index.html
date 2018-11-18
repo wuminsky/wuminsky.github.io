@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SVG 学习（上）</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>SVG 学习（上）</h1><h2 class="headline">Sep 08 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#是什么？"><span class="toc-text">是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#长什么样？"><span class="toc-text">长什么样？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何使用？"><span class="toc-text">如何使用？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基础绘图"><span class="toc-text">基础绘图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#形状"><span class="toc-text">形状</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#矩形"><span class="toc-text">矩形</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#圆形"><span class="toc-text">圆形</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#椭圆形"><span class="toc-text">椭圆形</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#多边形"><span class="toc-text">多边形</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线条"><span class="toc-text">线条</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#直线"><span class="toc-text">直线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#折线"><span class="toc-text">折线</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文本"><span class="toc-text">文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#填充与描边"><span class="toc-text">填充与描边</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工作区域"><span class="toc-text">工作区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#视口"><span class="toc-text">视口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标"><span class="toc-text">坐标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图层"><span class="toc-text">图层</span></a></li></ol></li></ol></div><section id="post-body"><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><p>SVG 全称是可缩放矢量图（Scalable Vector Graphics），是一种基于 XML 语法的图形格式。</p>
+<p>SVG 早在2003年就成为 W3C 标准，因此各大浏览器到现在对其支持都很好，没有兼容性问题。</p>
+<p><img src="https://i.loli.net/2018/09/22/5ba61f2b8e729.jpg" alt="兼容性.jpg"></p>
+<p>因为其图像是使用 XML 标记构建的，通过绘制每个点、线或形等基于数学方程的几何图元绘制图像，而不是用预定义的像素阵列填充空间。所以相比 PNG、JPG 或 Canvas 等栅格图形，SVG 可以任意缩放不失真，方便适配不同尺寸和分辨率的设备。</p>
+<p><img src="https://i.loli.net/2018/09/23/5ba71db384410.jpg" alt="对比.jpg"></p>
+<p>另一个很重要点是，由于是在 XML 中定义的，SVG 图像能在浏览器中生成 DOM 节点，我们便可以使用 CSS 和 html 与它们进行交互或控制样式，大大提高了 SVG 的灵活性。</p>
+<p>最后，由于 SVG 是用文本描述的，而非二进制，因此可以被记事本等阅读器、搜索引擎访问，提供了在可访问性方面优于传统栅格图像的巨大优势，例如，\&lt;desc> 元素允许你提供图形的详细描述。</p>
+<h3 id="长什么样？"><a href="#长什么样？" class="headerlink" title="长什么样？"></a>长什么样？</h3><p>SVG 图像使用 XML 定义，因此如果懂 HTML 的话，SVG 看起来会非常熟悉。SVG 代码根元素是一个\&lt;svg>，里面则是各种描述图形信息的元素相互嵌套，元素上有相关的属性。</p>
+<p>如下 SVG 图像示例，代表一个 10 x 10 像素的绿色矩形。</p>
+<pre><code class="html">&lt;svg width=&quot;10&quot; height=&quot;10&quot;&gt;
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;10&quot; height=&quot;10&quot; fill=&quot;green&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/09/23/5ba71a7651363.png" alt="绿色矩形.png"></p>
+<p>如果是以 .svg 结尾的 SVG 文件，其头部还会有 XML 声明，用于描述该 SVG 遵循的版本规范，目前常见的版本是1.1。</p>
+<pre><code class="svg">&lt;?xml version=&quot;1.0&quot; standalone=&quot;no&quot;?&gt;
+&lt;!DOCTYPE svg PUBLIC &quot;-//W3C//DTD SVG 1.1//EN&quot; &quot;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&quot;&gt;
+</code></pre>
+<p>注意：<br>SVG 的元素和属性必须按标准格式书写，因为 XML 是区分大小写的（这一点和HTML不同）。<br>SVG 里的属性值必须用引号引起来，就算是数值也必须这样做。</p>
+<p>大多情况下，我们并不编写 SVG 代码，而是使用 Sketch 或 illustrator 等工具来创建图像再将其导出为 SVG。那为什么还要学习怎么使用代码来创建 SVG？因为在实际使用过程中有时候需要手动修改导出的代码，来获得我们需要的效果（如去间距，改颜色）。</p>
+<h3 id="如何使用？"><a href="#如何使用？" class="headerlink" title="如何使用？"></a>如何使用？</h3><p>SVG 文件可以直接内联在 HTML 中，成为 DOM 的一部分。</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;svg
+  width=&quot;10&quot;
+  height=&quot;10&quot;
+  version=&quot;1.1&quot;
+  xmlns=&quot;http://www.w3.org/2000/svg&quot;
+&gt;
+  &lt;rect
+    x=&quot;0&quot;
+    y=&quot;0&quot;
+    width=&quot;10&quot;
+    height=&quot;10&quot;
+    fill=&quot;green&quot;
+  /&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>SVG 代码也可以写在一个独立文件中，通过指向文件地址来嵌入网页。</p>
+<p>\&lt;img>、\&lt;object>、\&lt;embed>、\&lt;iframe> 等元素都支持加载 SVG 文件。</p>
+<pre><code class="html">&lt;img src=&quot;my.svg&quot;&gt;
+&lt;object data=&quot;my.svg&quot; type=&quot;image/svg+xml&quot;&gt;&lt;/object&gt;
+&lt;embed src=&quot;my.svg&quot; type=&quot;image/svg+xml&quot;&gt;
+&lt;iframe src=&quot;my.svg&quot;&gt;&lt;/iframe&gt;
+</code></pre>
+<p>CSS 属性也可以加载 SVG 文件作为图形，就像使用 PNG, JPG 图片一样。</p>
+<pre><code class="css">.logo {
+  background: url(my.svg);
+}
+</code></pre>
+<p>SVG 还可以 Data URI 形式引入。</p>
+<pre><code class="html">&lt;img src=&#39;data:image/svg+xml;utf8,data:image/svg+xml;utf8,&lt;svg width=&quot;10&quot; height=&quot;10&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;10&quot; height=&quot;10&quot; fill=&quot;green&quot;/&gt;&lt;/svg&gt;&#39;&gt;
+</code></pre>
+<pre><code class="css">.logo {
+  background: url(&#39;data:image/svg+xml;utf8,data:image/svg+xml;utf8,&lt;svg width=&quot;10&quot; height=&quot;10&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;10&quot; height=&quot;10&quot; fill=&quot;green&quot;/&gt;&lt;/svg&gt;&#39;);
+}
+</code></pre>
+<p>当然还可以以base64 编码再嵌入，但是 SVG 在转 base64 后反而会变大，且 base64 本身解码也会消耗一定的资源，因此不建议使用。</p>
+<p>在 Glitch 上可以查看这些示例 <a href="https://flavio-svg-loading-ways.glitch.me/" target="_blank" rel="noopener">flavio-svg-loading-ways.glitch.me/</a></p>
+<h2 id="基础绘图"><a href="#基础绘图" class="headerlink" title="基础绘图"></a>基础绘图</h2><p>通过 SVG 元素能够绘制一些基础的形状和线条以及添加文本。每个元素都需要一些属性来指定绘制效果，如坐标和大小等详细信息。</p>
+<p>注：以下长度单位若为特殊注明均为像素。</p>
+<h3 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h3><h4 id="矩形"><a href="#矩形" class="headerlink" title="矩形"></a>矩形</h4><p>\&lt;rect> 元素用于绘制矩形。</p>
+<pre><code class="html">  &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;100&quot; height=&quot;100&quot; rx=&quot;5&quot; ry =&quot;10&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc74f77368d2.png" alt="rect"></p>
+<p>x 和 y 用来设置矩形左上角端点的横坐标和纵坐标；width 和 height 则用来设置宽度和高度；rx 和 ry 用来设置圆角的横向轴和纵向轴的半径。</p>
+<h4 id="圆形"><a href="#圆形" class="headerlink" title="圆形"></a>圆形</h4><p>\&lt;circle> 元素用于绘制圆形。</p>
+<pre><code class="html">  &lt;circle cx=&quot;75&quot; cy=&quot;75&quot; r=&quot;75&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc74fc1ea9cf.png" alt="circle"></p>
+<p>cx 和 cy 用来设置圆心的坐标位置；r 用来设置半径的大小。</p>
+<h4 id="椭圆形"><a href="#椭圆形" class="headerlink" title="椭圆形"></a>椭圆形</h4><p>\&lt;ellipse> 元素用于绘制椭圆形。</p>
+<pre><code class="html">  &lt;ellipse cx=&quot;100&quot; cy=&quot;100&quot; rx=&quot;100&quot; ry=&quot;50&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc74febcf6f5.png" alt="ellipse"></p>
+<p>cx 和 cy 用来设置圆心的坐标位置；rx 和 ry 用来设置横向轴和纵向轴的半径。</p>
+<h4 id="多边形"><a href="#多边形" class="headerlink" title="多边形"></a>多边形</h4><p>\&lt;polygon> 元素用于绘制多边形。</p>
+<pre><code class="html">  &lt;polygon points=&quot;50,5 100,5 125,30 125,80 100,105 50,105 25,80 25,30&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc75007e9ed9.png" alt="polygon"></p>
+<p>points 用来设置每个端点的坐标，横纵坐标之间与逗号分隔，点与点之间用空格分隔。</p>
+<h3 id="线条"><a href="#线条" class="headerlink" title="线条"></a>线条</h3><h4 id="直线"><a href="#直线" class="headerlink" title="直线"></a>直线</h4><p>\&lt;line> 元素用于绘制直线。</p>
+<pre><code class="html">  &lt;line x1=&quot;5&quot; y1=&quot;5&quot; x2=&quot;100&quot; y2=&quot;100&quot; stroke=&quot;black&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7503a4edec.png" alt="line"></p>
+<p>x1 和 y1 用来设置线段的起点坐标，x2 和 y2 则用来设置线段的终点坐标。</p>
+<h4 id="折线"><a href="#折线" class="headerlink" title="折线"></a>折线</h4><p>\&lt;polyline> 元素用于绘制折线。</p>
+<pre><code class="html">  &lt;polyline points=&quot;50,5 100,5 125,30 125,80 100,105 50,105 25,80 25,30&quot; stroke=&quot;black&quot; fill=&quot;white&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc750631b9f2.png" alt="polyline"></p>
+<p>points 用来设置每个端点的坐标，横纵坐标之间与逗号分隔，点与点之间用空格分隔。</p>
+<h3 id="文本"><a href="#文本" class="headerlink" title="文本"></a>文本</h3><p>\&lt;text> 元素用于绘制文本。</p>
+<pre><code class="html">  &lt;text x=&quot;30&quot; y=&quot;90&quot; font-size=&quot;40&quot; font-family=&quot;&#39;Leckerli One&#39;, cursive&quot;&gt;I can eat glass.&lt;/text&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7509c91d41.png" alt="text"></p>
+<p>x 和 y 用来设置文本区块基线（baseline）起点的横坐标和纵坐标；font-size 用来设置字体大小；font-family 用来设置字体类型。</p>
+<p>\&lt;text> 不会自动换行，但 &lt;tspan> 允许我们将某些文本单独设置，以绘制多行文本。</p>
+<pre><code class="html">  &lt;text x=&quot;15&quot; y=&quot;90&quot; font-size=&quot;60&quot;&gt;I can&lt;tspan dy=&quot;-30&quot; font-size=&quot;80&quot;&gt; eat &lt;/tspan&gt; &lt;tspan dy=&quot;50&quot;&gt;glass.&lt;/tspan&gt;&lt;/text&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc750b02e0ec.png" alt="tspn"></p>
+<p>dx 和 dy 用来设置 \&lt;tspan> 内文本相对 \&lt;text> 的 x 和 y 的位置。</p>
+<p>style 的 text-anchor 属性可以改变(x,y)作为起始坐标的定义，用于控制文本对齐方式。</p>
+<pre><code class="html">  &lt;text x=&quot;100&quot; y=&quot;30&quot; style=&quot;text-anchor: start&quot;&gt;Start&lt;/text&gt;
+  &lt;text x=&quot;100&quot; y=&quot;60&quot; style=&quot;text-anchor: middle&quot;&gt;Middle&lt;/text&gt;
+  &lt;text x=&quot;100&quot; y=&quot;90&quot; style=&quot;text-anchor: end&quot;&gt;End&lt;/text&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc750c784ff8.png" alt="text-anchor"></p>
+<p>通过 text-length 可以指定文本的长度；配合 lengthAdjust 可以使字母间距和字形大小调整以适应长度。</p>
+<pre><code class="html">  &lt;text x=&quot;10&quot; y=&quot;60&quot; textLength=&quot;500&quot; lengthAdjust=&quot;spacing&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;text x=&quot;10&quot; y=&quot;100&quot; textLength=&quot;500&quot; lengthAdjust=&quot;spacingAndGlyphs&quot;&gt;I can eat glass.&lt;/text&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc750dc2c62b.png" alt="text-length"></p>
+<p>letter-spacing 和 word-spacing 可以指定字符或单词之间的间距</p>
+<pre><code class="html">  &lt;text x=&quot;10&quot; y=&quot;30&quot; font-size=&quot;40&quot; letter-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;text x=&quot;10&quot; y=&quot;90&quot; font-size=&quot;40&quot; word-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7515080d9e.png" alt="lw"></p>
+<h3 id="填充与描边"><a href="#填充与描边" class="headerlink" title="填充与描边"></a>填充与描边</h3><p>fill 和 stroke 允许我们填充元素内部和绘制其线框，添加颜色、渐变或图案等。</p>
+<pre><code class="html">  &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;100&quot; height=&quot;100&quot; fill=&quot;blue&quot; stroke=&quot;orange&quot; stroke-width=&quot;2&quot; /&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc751a01ee4c.png" alt="fs"></p>
+<p>fill 和 store 还有其他配套属性来调整填充和描边的样式。</p>
+<ul>
+<li>fill-opacity 设置填充的透明度</li>
+<li><p>fill-rule 设置判断点在不在填充范围的算法，当边线交叉时或者内部有“洞”时和有效。值有 inherit、nonzero 和 evenodd（默认值）。</p>
+</li>
+<li><p>stroke-width 设置描边的粗细。</p>
+</li>
+<li>stroke-linecap 设置路径端点（也称为线帽）的样式。</li>
+<li>stroke-linejoin 设置路径连接处的样式。</li>
+<li>stroke-opacity 设置描边的透明度。</li>
+<li>stroke-dasharray 设置描边的为虚线并制定虚线的长度及以虚线之间的距离。</li>
+<li>stroke-dashoffset 指定描边虚线的起始偏移距离。</li>
+</ul>
+<h2 id="工作区域"><a href="#工作区域" class="headerlink" title="工作区域"></a>工作区域</h2><p>SVG 中最需要掌握的是它的工作区域，换句话说即图形是如何映射到页面中的。理解它有助于帮你更好的，更正确的呈现作品，特别是当进入了高级的 SVG 特性时，这个就变得非常重要。</p>
+<h3 id="视口"><a href="#视口" class="headerlink" title="视口"></a>视口</h3><p>\&lt;svg> 元素的 width 属性和 height 属性，用来设置 SVG 图形的宽度和高度（默认单位：像素），即 viewport，超出这个区域的图形部分将不显示。如果不指定这两个属性，则 SVG 图形默认大小是 10像素（宽）x 150像素（高）。</p>
+<pre><code class="html">&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+  &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;50&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc75201a1ec8.png" alt="view1"></p>
+<p>如果想控制 SVG 图形可见区域，就要指定 viewBox 属性。</p>
+<pre><code class="html">&lt;svg width=&quot;100&quot; height=&quot;100&quot; viewBox=&quot;50 50 50 50&quot;&gt;
+  &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;50&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7522b13888.png" alt="view2"></p>
+<p>viewBox 属性的值有四个数字，分别是相对 SVG 内部左上角的横坐标和纵坐标，以及视口的宽度和高度。上面代码中，SVG 图形宽高是100像素，viewBox属性指定视口从(50, 50)这个点开始的宽高为50像素的部分。所以，实际看到的是右下角的四分之一圆。因为视口必须适配所在的空间，所以视口会将该部分图形放大，此处放大了四倍。</p>
+<p>注意：如果不指定 width 属性和 height 属性，却指定了 viewBox 属性，则相当于只给定 SVG 图形的长宽比。这时SVG 图形的大小将等于所在的 HTML 元素的大小。</p>
+<p>上面的例子，SVG 的宽高比正好和 viewBox 的宽高比相同，都是1:1。当 viewport 和 viewBox 不具备相同的宽高比例时，preserveAspectRatio 属性将指示浏览器如何显示图形。preserveAspectRatio有两个参数， align 和 meetOrSlice。</p>
+<pre><code class="html">&lt;svg width=&quot;100&quot; height=&quot;100&quot; viewBox=&quot;50 50 30 50&quot; preserveAspectRatio=&quot;xMidYMid meet&quot;&gt;
+  &lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;50&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc752ccd8ce8.png" alt="view3"></p>
+<p>preserveAspectRatio 有两个参数，align 表示 viewBox 内对齐基准；meetOrSlice 表示如何维持宽高比例。</p>
+<p>align 由两部分组成，前半部分表示 x 方向的对齐，后半部分表示 y 方向的对齐，都有 Min、Mid、Max 三种值，分别为左中右或上中下。如上面例子的 xMidYMid 就代表可视区域以 x 轴和 y 轴为中心对齐，也是默认情况。</p>
+<p>meetOrSlice 的值类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>meet（默认情况）</td>
+<td>保持比例缩放 viewBox 适应 viewport，部分 viewport 会空白（类似 background-size: contain）</td>
+</tr>
+<tr>
+<td>slice</td>
+<td>保持比例放大 viewBox 使其覆盖 viewport，部分 viewBox 会被剪切（类似 background-size: cover）</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>拉伸改变比例以充分适应 viewport，图形可能会扭曲</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="坐标"><a href="#坐标" class="headerlink" title="坐标"></a>坐标</h3><p>理解了 SVG 的视口后，让我们来看看坐标系统。SVG 的坐标系统有三种类型：</p>
+<ul>
+<li>用户坐标系（User Coordinate），即画布的坐标系，以 viewport 左上角为原点，用于定位图形。</li>
+<li>前驱坐标系（Previous Coordinate），即父容器坐标系，图形进行坐标变换都是基于前驱坐标系。</li>
+<li>自身坐标系（Current Coordinate），每个图形或分组都会产生一个自身坐标系，用于定义自己的一些图形属性，例如宽高、位置。</li>
+</ul>
+<pre><code class="html">&lt;svg viewBox=&quot;0 0 100 100&quot;&gt;
+  &lt;g transform=&quot;translate(20) rotate(30)&quot;&gt;
+    &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;20&quot; height=&quot;20&quot; /&gt;
+  &lt;/g&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc752fb6c4cf.png" alt="view4"></p>
+<p>如上面的示例，\&lt;svg> 的 viewBox 属性使用用户坐标系，\&lt;rect> 的 rx ry 属性使用自身坐标系，\&lt;g> 则是 \&lt;circle> 的前驱坐标系。</p>
+<p>使用 transform 属性可以让坐标系统发生旋转、缩放、位移和扭曲等线性变换，以此改变画布中图形的位置和角度。</p>
+<p>transform 属性的值定义了应用于元素及其子元素的变换列表，每个变换由空格或逗号分隔。</p>
+<p>常见的 transform 属性的变换类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>变换</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>none 定义不进行转换。</td>
+</tr>
+<tr>
+<td>matrix(n,n,n,n,n,n)</td>
+<td>定义 2D 转换，使用六个值的矩阵。</td>
+</tr>
+<tr>
+<td>matrix3d(n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n)</td>
+<td>定义 3D 转换，使用 16 个值的 4x4 矩阵。</td>
+</tr>
+<tr>
+<td>translate(x,y)</td>
+<td>定义 2D 转换。</td>
+</tr>
+<tr>
+<td>translate3d(x,y,z)</td>
+<td>定义 3D 转换。</td>
+</tr>
+<tr>
+<td>translateX(x)</td>
+<td>定义转换，只是用 X 轴的值。</td>
+</tr>
+<tr>
+<td>translateY(y)</td>
+<td>定义转换，只是用 Y 轴的值。</td>
+</tr>
+<tr>
+<td>translateZ(z)</td>
+<td>定义 3D 转换，只是用 Z 轴的值。</td>
+</tr>
+<tr>
+<td>scale(x[,y]?)</td>
+<td>定义 2D 缩放转换。</td>
+</tr>
+<tr>
+<td>scale3d(x,y,z)</td>
+<td>定义 3D 缩放转换。</td>
+</tr>
+<tr>
+<td>scaleX(x)</td>
+<td>通过设置 X 轴的值来定义缩放转换。</td>
+</tr>
+<tr>
+<td>scaleY(y)</td>
+<td>通过设置 Y 轴的值来定义缩放转换。</td>
+</tr>
+<tr>
+<td>scaleZ(z)</td>
+<td>通过设置 Z 轴的值来定义 3D 缩放转换。</td>
+</tr>
+<tr>
+<td>rotate(angle)</td>
+<td>定义 2D 旋转，在参数中规定角度。</td>
+</tr>
+<tr>
+<td>rotate3d(x,y,z,angle)</td>
+<td>定义 3D 旋转。</td>
+</tr>
+<tr>
+<td>rotateX(angle)</td>
+<td>定义沿着 X 轴的 3D 旋转。</td>
+</tr>
+<tr>
+<td>rotateY(angle)</td>
+<td>定义沿着 Y 轴的 3D 旋转。</td>
+</tr>
+<tr>
+<td>rotateZ(angle)</td>
+<td>定义沿着 Z 轴的 3D 旋转。</td>
+</tr>
+<tr>
+<td>skew(x-angle,y-angle)</td>
+<td>定义沿着 X 和 Y 轴的 2D 倾斜转换。</td>
+</tr>
+<tr>
+<td>skewX(angle)</td>
+<td>定义沿着 X 轴的 2D 倾斜转换。</td>
+</tr>
+<tr>
+<td>skewY(angle)</td>
+<td>定义沿着 Y 轴的 2D 倾斜转换。</td>
+</tr>
+<tr>
+<td>perspective(n)</td>
+<td>为 3D 转换元素定义透视视图。</td>
+</tr>
+</tbody>
+</table>
+<p>其中 matrix 和 matrix3d 两个矩阵变换分别是实现各种 2D 和 3D 变换的基石。</p>
+<p>以 matrix 为例，六个参数代表3*3矩阵上的六个变量，它们与坐标系统的 x 轴和 y 轴相乘后生成新的坐标系统。</p>
+<p><img src="https://i.loli.net/2018/10/17/5bc75330a8452.png" alt="matrix"></p>
+<p>比如一个在原坐标系统（3， 5）的位置在经过变换后就到了（a3+c5+e，b3+d5+f）位置。如果变换为 matrix(7,0,0,8,0,0)，则该点变成了（21，40），对照原来在 x 方向放大了7倍，y 方向放大了8倍，相当于 scale(7,8)。</p>
+<h3 id="图层"><a href="#图层" class="headerlink" title="图层"></a>图层</h3><p>不管是在制图软件中还是 Web 页面的 DOM 元素，都有层级的概念，SVG 当然也不例外。</p>
+<pre><code class="html">&lt;svg width=&quot;200&quot; height=&quot;200&quot;&gt;
+  &lt;rect width=&quot;50&quot; height=&quot;50&quot; fill=&quot;blue&quot; /&gt;
+  &lt;ellipse cx=&quot;100&quot; cy=&quot;100&quot; rx=&quot;100&quot; ry=&quot;50&quot; fill=&quot;green&quot; /&gt;
+  &lt;circle cx=&quot;75&quot; cy=&quot;75&quot; r=&quot;75&quot; fill=&quot;pink&quot; /&gt;
+  &lt;polygon points=&quot;50,5 100,5 125,30 125,80 100,105 50,105 25,80 25,30&quot; fill=&quot;gray&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7534c6bfc4.png" alt="view5"></p>
+<p>SVG 中元素在 XML 代码中有固定的排列顺序，浏览器渲染时会遵守这个顺序，绘制时也同样会遵守这个顺序。也就是说先出现的元素会出现在绘制的底层，而后出现的元素会绘制在顶层，如果元素间的位置有重叠，则会现后绘制的元素会盖住先出现的元素。</p>
+<p>有一点需要特别说的是，SVG 中无法通过类似 z-index 的属性来改变他们层级的，在实际应用中通常都是通过 JavaScript 来动态改变 SVG 的元素顺序以达到改变层级的目的。</p>
+</section><nav id="post-nav"><span class="prev"><a href="/SVG-学习（下）/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/聊聊富文本编辑器/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

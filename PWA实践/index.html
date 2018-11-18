@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PWA实践</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>PWA实践</h1><h2 class="headline">Mar 17 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是PWA"><span class="toc-text">什么是PWA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#概念"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#特征"><span class="toc-text">特征</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#技术与示例"><span class="toc-text">技术与示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Web-App-Manifest-与-安装到主屏幕"><span class="toc-text">Web App Manifest 与 安装到主屏幕</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#技术"><span class="toc-text">技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Service-Worker-与-离线缓存"><span class="toc-text">Service Worker 与 离线缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#技术-1"><span class="toc-text">技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例-1"><span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#注册"><span class="toc-text">注册</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#激活"><span class="toc-text">激活</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#请求"><span class="toc-text">请求</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Push-Notification-与-消息推送"><span class="toc-text">Push Notification 与 消息推送</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#技术-2"><span class="toc-text">技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例-2"><span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol></div><section id="post-body"><h2 id="什么是PWA"><a href="#什么是PWA" class="headerlink" title="什么是PWA"></a>什么是PWA</h2><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>从 AJAX 的发明到 SPA 的流行，Web 开发技术在不断进步着，但在智能手机带来的移动互联网浪潮中，Native App 凭借更好的系统集成带来的体验成为时代的弄潮儿。于是便催生了一种结合传统 Web 开发的优势与 Native App 的体验的方案，使得 Web 应用在移动设备上的浴火重生。</p>
+<p><img src="https://s1.ax1x.com/2018/09/02/PxvwI1.jpg" alt="Web VS APP"></p>
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
+<p>PWA 全称 Progressive Web App，即渐进式 Web 应用。</p>
+</blockquote>
+<p>PWA 不是特指某一项技术，而是应用了多项技术的 Web App。其核心技术包括 <strong>Web App Manifest</strong>、<strong>Service Worker</strong>、<strong>Push Notification</strong>等等。其核心目标就是提升 Web App 的体验，使其接近于 Native App。</p>
+<p>自 2015 年以来，PWA 相关的技术不断升级优化，在用户体验和用户留存两方面都提供了非常好的解决方案，将 Web 和 App 各自的优势融合在了一起：渐进式、可响应、可离线、有类似 Native App 的交互、即时更新、安全、可以被搜索引擎检索、可推送、可安装、可链接等。</p>
+<h4 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h4><p>PWA 比传统的 Web App 主要多了这几个特征：</p>
+<ul>
+<li>本地缓存与离线执行，并且在网络恢复时可以同步最新数据。</li>
+<li>能安装到主屏幕，点击主屏图标有启动动画，可隐藏地址栏。</li>
+<li>实现了消息推送，让 Web App 能在未被激活时发起通知。</li>
+</ul>
+<p>而比起 Native App，PWA 又多了以下优势：</p>
+<ul>
+<li>用户可以在安装前就通过浏览器体验你的 App。</li>
+<li>无需通过应用商店下载，并能自动升级不需要用户手动升级。</li>
+<li>使用开放的 W3C 标准的 Web 技术开发，无需掌握客户端开发技术。</li>
+</ul>
+<h2 id="技术与示例"><a href="#技术与示例" class="headerlink" title="技术与示例"></a>技术与示例</h2><p>这里我通过开发一个简单的 PWA 应用，来阐述所需的关键技术及实现步骤。</p>
+<h3 id="Web-App-Manifest-与-安装到主屏幕"><a href="#Web-App-Manifest-与-安装到主屏幕" class="headerlink" title="Web App Manifest 与 安装到主屏幕"></a>Web App Manifest 与 安装到主屏幕</h3><h4 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h4><p><strong>Web App Manifest</strong> 是为了解决用户留存问题而诞生的一项技术，使 Web App 也可以启用一些 Native App 的特性。它是一个外链的 JSON 文件，定义了站点的名称，地址，图标等等元数据。通过在浏览器中引入这个文件，访问应用时，会弹出是否添加到主屏幕对话框，并在主屏幕上生成图标，通过主屏幕打开后全屏显示，没有浏览器地址栏，达到沉浸式体验。</p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/Manifest" target="_blank" rel="noopener">文档地址</a></p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p>在页面的 \&lt;head> 标签中用 \&lt;link> 标签引入 manifest.json 文件。</p>
+<pre><code class="html">......
+&lt;link rel=&quot;manifest&quot; href=&quot;/manifest.json&quot; /&gt;
+......
+</code></pre>
+<pre><code class="javascript">// manifest.json
+
+{
+  &quot;lang&quot;: &quot;en-US&quot;, // 指定name和short_name成员中的值的主要语言。 该值是包含单个语言标记的字符串。
+  &quot;dir&quot;: &quot;ltr&quot;, // 指定名称、短名称和描述成员的主文本方向。与lang一起配置，可以帮助正确显示右到左文本。
+  &quot;name&quot;: &quot;PWA DEMO&quot;, // 为应用程序提供一个人类可读的名称，例如在其他应用程序的列表中或作为图标的标签显示给用户。
+  &quot;short_name&quot;: &quot;PWA&quot;, // 为应用程序提供简短易读的名称。 这是为了在没有足够空间显示Web应用程序的全名时使用。
+  &quot;scope&quot;: &quot;/&quot;, // 定义此Web应用程序的应用程序上下文的导航范围。 如果用户在范围之外浏览应用程序，则返回到正常的网页。
+  &quot;start_url&quot;: &quot;/&quot;,  // 指定用户从设备启动应用程序时加载的URL。 如果以相对URL的形式给出，则基本URL将是manifest的URL。
+  &quot;display&quot;: &quot;standalone&quot;, // 定义开发人员对Web应用程序的首选显示模式。standalone让这个应用程序看起来像一个独立的应用程序。
+  &quot;theme_color&quot;: &quot;black&quot;, // 定义应用程序的默认主题颜色。
+  &quot;background_color&quot;: &quot;transparent&quot;, // 为web应用程序预定义的背景颜色。
+  &quot;description&quot;: &quot;Minsky&#39;s PWA DEMO&quot;, // 提供有关Web应用程序的一般描述。
+  &quot;orientation&quot;: &quot;any&quot;, // 定义所有Web应用程序首选的默认方向。
+  &quot;related_applications&quot;: [], // 指定一个“应用程序对象”数组，代表对应的可由底层平台安装或可访问的本机应用程序。
+  &quot;icons&quot;: [ // 指定可在各种环境中用作应用程序图标的图像对象数组。
+    {
+      &quot;src&quot;           : &quot;/images/logo/logo048.png&quot;,
+      &quot;sizes&quot;         : &quot;48x48&quot;,
+      &quot;type&quot;          : &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;           : &quot;/images/logo/logo144.png&quot;,
+      &quot;sizes&quot;         : &quot;144x144&quot;,
+      &quot;type&quot;          : &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;           : &quot;/images/logo/logo256.png&quot;,
+      &quot;sizes&quot;         : &quot;256x256&quot;,
+      &quot;type&quot;          : &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;           : &quot;/images/logo/logo512.png&quot;,
+      &quot;sizes&quot;         : &quot;512x512&quot;,
+      &quot;type&quot;          : &quot;image/png&quot;
+    }
+  ]
+}
+</code></pre>
+<p>之后在 Chrome 开发者工具中的 Application 下 Manifest 选项，你可以验证你的 manifest.json 文件，并有 “Add to homescreen” 选项供将页面添加到主屏幕。</p>
+<p><img src="https://s1.ax2x.com/2018/09/02/5BtUwp.png" alt="Application截图"></p>
+<p><strong>Web App Manifest</strong> 作为 PWA 的「户口本」，承载着 Web App 与操作系统集成能力的重任，必会在日后不断扩展，以满足 Web App 高速演化的需要。</p>
+<h3 id="Service-Worker-与-离线缓存"><a href="#Service-Worker-与-离线缓存" class="headerlink" title="Service Worker 与 离线缓存"></a>Service Worker 与 离线缓存</h3><h4 id="技术-1"><a href="#技术-1" class="headerlink" title="技术"></a>技术</h4><p><strong>Service Worker</strong> 是一个特殊的 <strong>Web Worker</strong>，独立于页面主线程运行。它就像一个位于浏览器与网络之间的客户端代理，可以拦截、处理、响应流经的 HTTP 请求，配合 <strong>Cache Storage API</strong>，开发者可以自由管理 HTTP 请求的缓存，以使得 Web 站点离线可用。</p>
+<p><img src="https://s1.ax2x.com/2018/09/02/5BtAEK.png" alt="工作流程"></p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/ServiceWorker" target="_blank" rel="noopener">文档地址</a></p>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><p><strong>Service Worker</strong> 要求网站必须使用 <strong>HTTPS</strong>，除了使用本地开发环境调试时（如域名使用 localhost）。</p>
+<h5 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h5><p>在我们的 APP 组件中注册 <strong>Service Worker</strong>。</p>
+<pre><code class="javascript">// APP.js
+
+......
+  componentDidMount () {
+    if (&#39;serviceWorker&#39; in navigator) {
+      navigator.serviceWorker.register(&#39;/service-worker.js&#39;)
+        .then(function (registration) {
+          // 注册成功
+          console.log(&#39;ServiceWorker registration successful&#39;)
+        }).catch(function (err) {
+          // 注册失败 :(
+          console.log(&#39;ServiceWorker registration failed: &#39;, err)
+        })
+    }
+  }
+......
+
+</code></pre>
+<p><strong>Service Worker</strong> 提供了一组生命周期供我们使用，其中最主要的是 install，activate 和 fetch 这三个事件。</p>
+<p><img src="https://s1.ax2x.com/2018/09/02/5BtNyE.png" alt="生命周期"></p>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p>注册完之后，<strong>Service Worker</strong> 就会触发安装事件，这时我们可以把应用所需的资源预先下载并缓存到 <strong>Cache Storage</strong> 中去。</p>
+<pre><code class="javascript">// service-worker.js
+
+// 缓存的名称
+const CACHE_NAME = &#39;PWA-DEMO&#39;
+
+// 安装事件
+self.addEventListener(&#39;install&#39;, event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; cache.addAll([
+        &#39;./&#39;,
+        &#39;./styles.css&#39;,
+        &#39;./script.js&#39;
+      ]))
+  )
+})
+</code></pre>
+<p>waitUtil 方法可以传入一个 <strong>Promise</strong> 对象，用于执行预装逻辑。通常会做一些轻量级和非常重要资源的缓存，如果所有的文件都成功缓存了，便会安装完成。安装成功后 <strong>Service Worker</strong> 的状态会从 installing 变为 installed。</p>
+<p>经过上面的操作，创建和添加了一个叫 PWA-DEMO 缓存库。<br><img src="https://s1.ax2x.com/2018/09/02/5Bt8F2.png" alt="Cache Storage"></p>
+<h5 id="激活"><a href="#激活" class="headerlink" title="激活"></a>激活</h5><p>当安装完成后，ServiceWorker 进入激活状态。</p>
+<pre><code class="javascript">// service-worker.js
+
+// 激活事件
+self.addEventListener(&#39;active&#39;, function (event) {
+  console.log(&#39;service worker is active&#39;)
+})
+</code></pre>
+<p>你可能会问，再次进入页面是不是又会重新注册安装和激活了一个 <strong>Service Worker</strong>？虽然又调了一次注册代码，但浏览器会检测这个 service-worker.js 是否已经注册过，就不会再执行注册代码，进而不会触发 install 和 active 事件。</p>
+<h5 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h5><p><strong>Service Worker</strong> 之后会触发 fetch 事件，通过 fetch 事件可以截获页面的网络请求，这些请求包括页面脚本、图片、字体，以及获取数据的 AJAX。</p>
+<p>使用 caches.match() 函数来检查传入的请求是否匹配当前缓存中存在的内容。如果存在的话，返回缓存的资源，否则通过网络来获取资源，并将其添加到缓存中。这样当网络无法访问时，我们就可以从缓存中获取资源，运行我们的 Web App。</p>
+<p>注意：跨域的资源不能缓存，response.status 会返回0。</p>
+<pre><code class="javascript">// service-worker.js
+
+// 请求事件
+self.addEventListener(&#39;fetch&#39;, event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function (response) {
+        if (response) {
+          // 返回缓存资源
+          return response
+        }
+        const requestToCache = event.request.clone()
+        return fetch(requestToCache).then(
+          function (response) {
+            if (!response || response.status !== 200) return response
+            const responseToCache = response.clone()
+            // 将请求资源缓存
+            caches.open(CACHE_NAME)
+              .then(function (cache) {
+                cache.put(requestToCache, responseToCache)
+              })
+            return response
+          })
+      }
+    )
+   )
+})
+</code></pre>
+<p>这里用了 request.clone() 和 response.clone()，因为 request 和 response 是一个流，它只能消耗一次。我们已经通过缓存消耗了一次，诸侯发起 HTTP 请求还要再消耗一次，所以我们需要预先克隆请求的内容。</p>
+<p>Chrome 开发者工具的 Application 下提供了查看 <strong>Service Worker</strong> 相关信息的选项。</p>
+<p><img src="https://s1.ax2x.com/2018/09/02/5Btftz.png" alt="Application"></p>
+<p><strong>Service Worker</strong> 的强大在于拦截 HTTP 请求的能力，它对 PWA 的意义就相当于 XMLHTTPRequest 之于 Ajax，Media Query 之于响应式设计，是支撑 PWA 最核心的技术。</p>
+<h3 id="Push-Notification-与-消息推送"><a href="#Push-Notification-与-消息推送" class="headerlink" title="Push Notification 与 消息推送"></a>Push Notification 与 消息推送</h3><h4 id="技术-2"><a href="#技术-2" class="headerlink" title="技术"></a>技术</h4><p><strong>Push Notification</strong> 其实是两个 API 的结合，<strong>Notification API</strong> 和 <strong>Push API</strong>。 前者提供了给用户发送通知的能力，包括通知的权限管理、发起通知、通知的类型与音效，以及通知被点击或关闭时的回调等等。<strong>Push API</strong>，则是定义了 Web App 如何向服务端发起订阅、如何响应推送消息，即使用户并没有打开页面，甚至没有打开浏览器。</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/notification / https://developer.mozilla.org/en-US/docs/Web/API/Push_API" target="_blank" rel="noopener">文档地址</a></p>
+<h4 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h4><p>在 PWA 中，我们通过 <strong>Service Worker</strong> 的后台处理能力结合 <strong>Push API</strong> 对服务端的推送事件进行响应，并利用 <strong>Notification API</strong> 实现通知。</p>
+<pre><code class="javascript">// service-worker.js
+
+// 推送事件
+self.addEventListener(&#39;push&#39;, event =&gt; {
+  const data = event.data ? JSON.parse(event.data.text()) : {}
+  event.waitUntil(
+    // 使用提供的信息来显示 Web 推送通知
+    self.registration.showNotification(&#39;Hello World!&#39;, {
+      body: data.msg,
+      url: data.url,
+      icon: data.icon
+    })
+  )
+})
+
+// 通知点击事件
+self.addEventListener(&#39;notificationclick&#39;, event =&gt; {
+  event.notification.close();
+})
+
+// 通知关闭事件
+self.addEventListener(&#39;notificationclose&#39;, event =&gt; {
+  console.log(&#39;notification closed&#39;)
+})
+
+</code></pre>
+<p>服务端发送消息给 <strong>Service Worker</strong>。</p>
+<pre><code class="javascript">const webpush = require(&#39;web-push&#39;)
+const express = require(&#39;express&#39;)
+
+const app = express()
+
+webpush.setVapidDetails(
+  &#39;mailto:wu@minsky.me&#39;,
+  &#39;BAyb_WgaR0L0pODaR7wWkxJi__tWbM1MPBymyRDFEGjtDCWeRYS9EF7yGoCHLdHJi6hikYdg4MuYaK0XoD0qnoY&#39;,
+  &#39;p6YVD7t8HkABoez1CvVJ5bl7BnEdKUu5bSyVjyxMBh0&#39;
+)
+
+app.post(&#39;/register&#39;, function (req, res) {
+  var endpoint = req.body.endpoint
+  saveRegistrationDetails(endpoint, key, authSecret)
+  const pushSubscription = {
+    endpoint: req.body.endpoint,
+    keys: {
+      auth: req.body.authSecret,
+      p256dh: req.body.key
+    }
+  }
+  var body = &#39;Thank you for registering&#39;
+  var iconUrl = &#39;images/homescreen.png&#39;
+  webpush.sendNotification(pushSubscription,
+    JSON.stringify({
+      msg: body,
+      url: &#39;http://localhost:3111/&#39;,
+      icon: iconUrl
+    }))
+    .then(result =&gt; res.sendStatus(201))
+    .catch(err =&gt; {
+      console.log(err)
+    })
+})
+
+app.listen(3111, function () {
+  console.log(&#39;Web push app listening on port 3111!&#39;)
+})
+</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>PWA 的出现，为现有的 Web 增加了很多令人鼓舞的特性，使得 Web 应用能拥有更接近原生的体验，虽然目前兼容性不是很好，但前景必定是光明的，是一项值得关注的技术。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://developers.google.cn/web/progressive-web-apps/" target="_blank" rel="noopener">Progressive Web Apps  |  Web  |  Google Developers</a></li>
+<li><a href="https://developer.mozilla.org/en-US/Apps/Progressive" target="_blank" rel="noopener">Progressive web apps - App Center | MDN</a></li>
+<li><a href="https://lavas.baidu.com/pwa" target="_blank" rel="noopener">什么是 PWA | PWA 文档 | Lavas</a></li>
+<li><a href="http://sangka-z.com/PWA-Book-CN/" target="_blank" rel="noopener">第一本 PWA 中文书</a></li>
+<li><a href="https://huangxuan.me/2017/02/09/nextgen-web-pwa/" target="_blank" rel="noopener">下一代 Web 应用模型 —— Progressive Web App</a></li>
+</ul>
+</section><nav id="post-nav"><span class="prev"><a href="/React服务端渲染实践/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

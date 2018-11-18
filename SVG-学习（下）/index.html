@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SVG 学习（下）</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>SVG 学习（下）</h1><h2 class="headline">Sep 27 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#高级绘图"><span class="toc-text">高级绘图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#组织"><span class="toc-text">组织</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分组"><span class="toc-text">分组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引用"><span class="toc-text">引用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#标识"><span class="toc-text">标识</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#路径"><span class="toc-text">路径</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#普通路径"><span class="toc-text">普通路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文本路径"><span class="toc-text">文本路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#剪切路径"><span class="toc-text">剪切路径</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#渐变"><span class="toc-text">渐变</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#线性渐变"><span class="toc-text">线性渐变</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#径向渐变"><span class="toc-text">径向渐变</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图案"><span class="toc-text">图案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动画"><span class="toc-text">动画</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#animate"><span class="toc-text">animate</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#animateTransform"><span class="toc-text">animateTransform</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#animateMotion"><span class="toc-text">animateMotion</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与-JavaScript-和-CSS-交互"><span class="toc-text">与 JavaScript 和 CSS 交互</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JavaScript"><span class="toc-text">JavaScript</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSS"><span class="toc-text">CSS</span></a></li></ol></li></ol></div><section id="post-body"><h2 id="高级绘图"><a href="#高级绘图" class="headerlink" title="高级绘图"></a>高级绘图</h2><h3 id="组织"><a href="#组织" class="headerlink" title="组织"></a>组织</h3><p>实际应用中，可能需要多次重复显示一个相同的图形，因此 SVG 提供了一系列元素帮助我们更好的组织图形并进行复用。</p>
+<h4 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h4><p>\&lt;g> 元素是用于对图形元素进行分组，以便对整体统一操作，比如旋转，缩放或者添加相关样式等。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;g fill=&quot;red&quot;&gt;
+    &lt;rect x=&quot;50&quot; y=&quot;10&quot; width=&quot;50&quot; height=&quot;50&quot; rx=&quot;5&quot; ry=&quot;10&quot; /&gt;
+    &lt;text x=&quot;10&quot; y=&quot;90&quot; font-size=&quot;40&quot; word-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;/g&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc753ca6f3c9.png" alt="g"></p>
+<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>\&lt;use> 元素用于复用文档中已有元素，可以是单个元素，也可以是一组元素。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;circle id=&quot;myCircle&quot; cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;10&quot; /&gt;
+  &lt;g id=&quot;myGroup&quot;&gt;
+    &lt;rect x=&quot;50&quot; y=&quot;10&quot; width=&quot;50&quot; height=&quot;50&quot; rx=&quot;5&quot; ry=&quot;10&quot; /&gt;
+    &lt;text x=&quot;10&quot; y=&quot;90&quot; font-size=&quot;40&quot; word-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;/g&gt;
+  &lt;use href=&quot;#myCircle&quot; x=&quot;100&quot; y=&quot;0&quot; fill=&quot;blue&quot; /&gt;
+  &lt;use href=&quot;#myGroup&quot; x=&quot;20&quot; y=&quot;30&quot; fill=&quot;white&quot; stroke=&quot;blue&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc753e432489.png" alt="use"></p>
+<p>href 属性用来指定所要复制的节点，元素可以有 x，y，width，height，transform 等属性，这些属性定义图形在坐标系中的详细映射位置。</p>
+<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>\&lt;defs> 元素用于自定义形状，它内部的图形不会显示，仅供引用。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;defs&gt;
+    &lt;g id=&quot;myGroup&quot;&gt;
+      &lt;rect x=&quot;50&quot; y=&quot;10&quot; width=&quot;50&quot; height=&quot;50&quot; rx=&quot;5&quot; ry=&quot;10&quot; /&gt;
+      &lt;text x=&quot;10&quot; y=&quot;90&quot; font-size=&quot;40&quot; word-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+    &lt;/g&gt;
+  &lt;/defs&gt;
+  &lt;use href=&quot;#myGroup&quot; x=&quot;20&quot; y=&quot;30&quot; fill=&quot;white&quot; stroke=&quot;blue&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc754047ddeb.png" alt="defs"></p>
+<h4 id="标识"><a href="#标识" class="headerlink" title="标识"></a>标识</h4><p>\&lt;symbol> 元素兼具 \&lt;g> 元素的分组功能和 \&lt;defs> 元素的不可见的特性。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;symbol id=&quot;mySymbol&quot; viewBox=&quot;0 0 250 250&quot;&gt;
+    &lt;rect x=&quot;50&quot; y=&quot;10&quot; width=&quot;50&quot; height=&quot;50&quot; rx=&quot;5&quot; ry=&quot;10&quot; /&gt;
+    &lt;text x=&quot;10&quot; y=&quot;90&quot; font-size=&quot;40&quot; word-spacing=&quot;30&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;/symbol&gt;
+  &lt;use href=&quot;#mySymbol&quot; x=&quot;20&quot; y=&quot;30&quot; fill=&quot;white&quot; stroke=&quot;blue&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc754585791d.png" alt="symbol"></p>
+<p>\&lt;symbol> 元素最神奇的一点是能够创建自己的视口，所以能够应用 viewBox 和 preserveAspectRatio 属性。</p>
+<h3 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h3><p>SVG 的路径即一条曲线，此曲线可以填充，描边，并用于导航文本和用作剪切路径。</p>
+<h4 id="普通路径"><a href="#普通路径" class="headerlink" title="普通路径"></a>普通路径</h4><p>\&lt;path> 元素用于绘制路径。</p>
+<pre><code class="html">&lt;svg width=&quot;300&quot; height=&quot;300&quot;&gt;
+  &lt;path d=&quot;
+    M 18,3
+    L 46,3
+    L 46,40
+    L 61,40
+    L 32,68
+    L 3,40
+    L 18,40
+    Z
+  &quot;&gt;&lt;/path&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc754b5d060b.png" alt="path"></p>
+<p>d 属性的数据表示绘制流程，它的值是一个长字符串，每个字母表示一个绘制指令，后面跟着坐标。</p>
+<p>常见的 d 属性的绘制指令如下，大小写代表其后为绝对坐标还是相对坐标：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M(m)-moveto</td>
+<td>设置一个起始点，代表子路径的开始</td>
+</tr>
+<tr>
+<td>L(l)-lineto</td>
+<td>从当前点绘制直线到下一个点</td>
+</tr>
+<tr>
+<td>H(h)-horizontal lineto</td>
+<td>从当前点绘制水平线</td>
+</tr>
+<tr>
+<td>V(v)-vertical lineto</td>
+<td>从当前点绘制垂直线</td>
+</tr>
+<tr>
+<td>C(c)-curveto</td>
+<td>从当前点绘制一次贝塞尔曲线</td>
+</tr>
+<tr>
+<td>S(s)-smooth curveto</td>
+<td>从当前点绘制平滑一次贝塞尔曲线</td>
+</tr>
+<tr>
+<td>Q(q)-quadratic Belzier curve</td>
+<td>从当前点绘制二次贝塞尔曲线</td>
+</tr>
+<tr>
+<td>T(t)-smooth quadratic Belzier curveto</td>
+<td>从当前点绘制平滑二次贝塞尔曲线</td>
+</tr>
+<tr>
+<td>A(a)-elliptical Arc</td>
+<td>从当前点绘制椭圆弧线</td>
+</tr>
+<tr>
+<td>Z(z)-closepath</td>
+<td>结束当前子路径，并从该点到初始点绘制直线。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="文本路径"><a href="#文本路径" class="headerlink" title="文本路径"></a>文本路径</h4><p>还记得前面提到用于绘制文本的 \&lt;text> 元素吗，SVG 提供了 \&lt;textPath> 元素用于根据路径呈现文本。</p>
+<pre><code class="html">&lt;svg width=&quot;600&quot; height=&quot;200&quot;&gt;
+  &lt;defs&gt;
+    &lt;path id=&quot;testPath&quot; d=&quot;M3.858,58.607 c16.784-5.985,33.921-10.518,51.695-12.99c50.522-7.028,101.982,0.51,151.892,8.283c17.83,2.777,35.632,5.711,53.437,8.628 c51.69,8.469,103.241,11.438,155.3,3.794c53.714-7.887,106.383-20.968,159.374-32.228c11.166-2.373,27.644-7.155,39.231-4.449&quot; /&gt;
+  &lt;/defs&gt;
+  &lt;use xlink:href=&quot;#testPath&quot; fill=&quot;none&quot; stroke=&quot;black&quot; stroke-width=&quot;2&quot; /&gt;
+  &lt;text x=&quot;30&quot; y=&quot;90&quot; font-size=&quot;40&quot; font-family=&quot;&#39;Leckerli One&#39;, cursive&quot;&gt;
+    &lt;textPath xlink:href=&quot;#testPath&quot; startOffset=&quot;20%&quot;&gt;I can eat glass as I can eat glass.&lt;/textPath&gt;
+  &lt;/text&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc754cff1141.png" alt="textpath"></p>
+<p>\&lt;textPath> 元素在 \&lt;text> 元素内，通过 xlink:href 属性引用指定路径，其中超出<path></path>长度部分的文字将被隐藏。默认 \&lt;textPath> 的起始位置为 \&lt;path> 的起始位置，使用startOffset 属性可以调整起始位置。</p>
+<h4 id="剪切路径"><a href="#剪切路径" class="headerlink" title="剪切路径"></a>剪切路径</h4><p>\&lt;clipPath> 元素用于设置剪切路径，是不是想起了 CSS3 的 clip-path？</p>
+<pre><code class="html">&lt;svg width=&quot;400px&quot; height=&quot;200px&quot;&gt;
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;100&quot; height=&quot;200&quot; fill=&quot;blue&quot; /&gt;
+  &lt;polygon points=&quot;100,25 250,25 275,50 275,100 250,125 100,125 75,100 75,50&quot; /&gt;
+  &lt;circle cx=&quot;380&quot; cy=&quot;100&quot; r=&quot;120&quot; fill=&quot;green&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7550286815.png" alt="clippath1"></p>
+<pre><code class="html">&lt;svg width=&quot;400px&quot; height=&quot;200px&quot;&gt;
+  &lt;clipPath id=&quot;clip-text&quot;&gt;
+    &lt;text x=&quot;0&quot; y=&quot;90&quot; font-size=&quot;55px&quot;&gt;I can eat glass.&lt;/text&gt;
+  &lt;/clipPath&gt;
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;100&quot; height=&quot;200&quot; fill=&quot;blue&quot; clip-path=&quot;url(#clip-text)&quot; /&gt;
+  &lt;polygon points=&quot;100,25 250,25 275,50 275,100 250,125 100,125 75,100 75,50&quot; clip-path=&quot;url(#clip-text)&quot; /&gt;
+  &lt;circle cx=&quot;380&quot; cy=&quot;100&quot; r=&quot;120&quot; fill=&quot;green&quot; clip-path=&quot;url(#clip-text)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7551e000d5.png" alt="clippath2"></p>
+<p>如上分别为未添加剪切路径和添加剪切路径的图形，通过剪切路径可以限制图形绘制的范围，在剪切路径之外的区域不会被渲染。</p>
+<h3 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h3><p>渐变是一种从一种颜色到另一种颜色的平滑过渡，SVG 渐变有两种类型：线性渐变和径向渐变。</p>
+<h4 id="线性渐变"><a href="#线性渐变" class="headerlink" title="线性渐变"></a>线性渐变</h4><p>\&lt;linearGradient> 元素用于创建线性渐变。</p>
+<pre><code class="html">&lt;svg width=&quot;405&quot; height=&quot;105&quot;&gt;
+  &lt;defs&gt;
+    &lt;linearGradient id=&quot;linearGradient&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;100%&quot; y2=&quot;0&quot;&gt;
+      &lt;stop offset=&quot;0%&quot; stop-color=&quot;blue&quot; /&gt;
+      &lt;stop offset=&quot;100%&quot; stop-color=&quot;green&quot; /&gt;
+    &lt;/linearGradient&gt;
+  &lt;/defs&gt;
+  &lt;rect x=&quot;5&quot; y=&quot;5&quot; width=&quot;400&quot; height=&quot;100&quot; fill=&quot;url(#linearGradient)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7553a19fa3.png" alt="linearGradient"></p>
+<p>\&lt;stop> 元素在内部用于设置渐变线上的临界点，offset 指定点的位置，0% 为起始，100% 为终点；stop-color 指定点的颜色；此外还有 stop-opacity 属性可以设置透明度。</p>
+<p>\&lt;linearGradient> 元素的 x1, y1, x2, y2 属性表示渐变停止（颜色变化）映射的开始和结束点。</p>
+<h4 id="径向渐变"><a href="#径向渐变" class="headerlink" title="径向渐变"></a>径向渐变</h4><p>\&lt;radialGradient> 用于创建径向渐变，其大多数属性与 \&lt;linearGradient> 相同，除了有不同的坐标系统。</p>
+<pre><code class="html">&lt;svg width=&quot;200&quot; height=&quot;200&quot;&gt;
+  &lt;defs&gt;
+    &lt;radialGradient id=&quot;radialGradient&quot; cx=&quot;50%&quot; cy=&quot;50%&quot; fx=&quot;70%&quot; fy=&quot;70%&quot; r=&quot;40%&quot; &gt;
+      &lt;stop offset=&quot;0%&quot; stop-color=&quot;blue&quot; /&gt;
+      &lt;stop offset=&quot;100%&quot; stop-color=&quot;red&quot; /&gt;
+    &lt;/radialGradient&gt;
+  &lt;/defs&gt;
+  &lt;circle cx=&quot;75&quot; cy=&quot;75&quot; r=&quot;75&quot; fill=&quot;url(#radialGradient)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc7554f750ec.png" alt="radialGradient"></p>
+<p>cx，cy 定义了最外层圆（即offset=”100%”）的圆心；fx，fy 定义了最内层圆（即offset=”0”）的圆心；r 则是设置径向渐变的半径。</p>
+<h3 id="图案"><a href="#图案" class="headerlink" title="图案"></a>图案</h3><p>除了渐变之外，SVG 还可以使用 /<pattern> 元素定义图形，被用在其他元素的 fill 或者 stroke 属性中来填充图形。</pattern></p>
+<pre><code class="html">&lt;svg width=&quot;220&quot; height=&quot;220&quot;&gt;
+  &lt;defs&gt;
+    &lt;pattern id=&quot;pattern&quot; x=&quot;10&quot; y=&quot;10&quot; width=&quot;40&quot; height=&quot;40&quot; patternUnits=&quot;userSpaceOnUse&quot;&gt;
+      &lt;circle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;20&quot; /&gt;
+    &lt;/pattern&gt;
+  &lt;/defs&gt;
+  &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;200&quot; height=&quot;200&quot; fill=&quot;url(#pattern)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc755838d09d.png" alt="pattern"></p>
+<p>x 和 y 定义了图案从图形哪个位置开始；width 和 height 定义了图案的宽度和高度；patternUnits 定义了 x，y，width，height 的坐标系统，有 objectBoundingBox（默认值） 和 userSpaceOnUse 两种，前者表示使用用户坐标系统（即绝对值配置），后者表示使用外框坐标系统（即百分比配置）。</p>
+<h3 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h3><h4 id="animate"><a href="#animate" class="headerlink" title="animate"></a>animate</h4><p>\&lt;animate> 元素用于产生动画效果，只需将 \&lt;animate> 元素嵌套在指定的图形内。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;100&quot; height=&quot;100&quot;&gt;
+    &lt;animate attributeName=&quot;x&quot; from=&quot;0&quot; to=&quot;500&quot; begin=&quot;0s&quot; dur=&quot;2s&quot; fill=&quot;remove&quot; repeatCount=&quot;indefinite&quot; /&gt;
+  &lt;/rect&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc75635d941d.gif" alt="animate"></p>
+<p>attributeName 属性指定发生动画效果的属性名；from 和 to 定义动画开始值和介绍值；begin 和 dur 定义动画开始时间和结束时间；fill 定义 动画终止时的状态，有 freeze（停留在结束状态） 和 remove（默认值，返回初始状态）；repeatCount 定义动画的循环模式；此外还有一个 attributeType 属性，当 attributeType=”XML” 时，attributeName 被认为是 XML 的属性；当 attributeType=”CSS” 时，attributeName 被认为是 css 的属性；不指定 attributeType 时，默认为 “auto”，会先将 attributeName 作为 CSS 的属性，如果无效，再将 attributeName 作为 XML 的属性。</p>
+<h4 id="animateTransform"><a href="#animateTransform" class="headerlink" title="animateTransform"></a>animateTransform</h4><p>\&lt;animate> 元素对 CSS 的 transform 属性不起作用，如果需要变形，就要使用 \&lt;animateTransform> 元素，它的用法基本和 \&lt;animate> 元素相同。</p>
+<pre><code class="html">&lt;svg width=&quot;500&quot; height=&quot;500&quot;&gt;
+  &lt;rect x=&quot;250&quot; y=&quot;250&quot; width=&quot;50&quot; height=&quot;50&quot;&gt;
+    &lt;animateTransform attributeName=&quot;transform&quot; type=&quot;scale&quot; from=&quot;1&quot; to=&quot;4 2&quot; begin=&quot;0s&quot; dur=&quot;4s&quot; repeatCount=&quot;indefinite&quot; /&gt;
+  &lt;/rect&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc75635dc006.gif" alt="animateTransform"></p>
+<h4 id="animateMotion"><a href="#animateMotion" class="headerlink" title="animateMotion"></a>animateMotion</h4><p>\&lt;animateMotion> 是个很强大的元素，通常用它来完成路径动画，让父元素沿着指定的路径运动。</p>
+<pre><code class="html">&lt;svg width=&quot;300&quot; height=&quot;100&quot;&gt;
+    &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;20&quot; height=&quot;20&quot;&gt;
+        &lt;animateMotion path=&quot;M 250,80 H 50 Q 30,80 30,50 Q 30,20 50,20 H 250 Q 280,20,280,50 Q 280,80,250,80Z&quot; dur=&quot;3s&quot; repeatCount=&quot;indefinite&quot; rotate=&quot;auto&quot;&gt;
+    &lt;/rect&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><img src="https://i.loli.net/2018/10/17/5bc755f00d9a0.gif" alt="animateMotion"></p>
+<h2 id="与-JavaScript-和-CSS-交互"><a href="#与-JavaScript-和-CSS-交互" class="headerlink" title="与 JavaScript 和 CSS 交互"></a>与 JavaScript 和 CSS 交互</h2><pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;svg
+  id=&quot;mysvg&quot;
+  width=&quot;100&quot;
+  height=&quot;100&quot;
+  version=&quot;1.1&quot;
+  xmlns=&quot;http://www.w3.org/2000/svg&quot;
+&gt;
+  &lt;rect
+    id=&quot;myrect&quot;
+    x=&quot;0&quot;
+    y=&quot;0&quot;
+    width=&quot;10&quot;
+    height=&quot;10&quot;
+    fill=&quot;green&quot;
+  /&gt;
+&lt;/svg&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>如果 SVG 代码直接写在 HTML 中，它就成为网页 DOM 的一部分，可以用 JavaScript 和 CSS 与其交互。</p>
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>JavaScript 能像对通常的 DOM 元素一样处理 SVG 元素，进行事件绑定和各种 DOM 操作。</p>
+<pre><code class="javascript">var mysvg = document.getElementById(&#39;mysvg&#39;)
+
+mysvg.addEventListener(&#39;click&#39;, function(e) {
+  var rect = document.createElementNS(&#39;http://www.w3.org/2000/svg&#39;, &#39;rect&#39;);
+  rect.setAttribute(&#39;width&#39;, 100);
+  rect.setAttribute(&#39;height&#39;, 30);
+  rect.setAttribute(&#39;style&#39;, &#39;fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)&#39;);
+  mysvg.appendChild()
+}, false)
+</code></pre>
+<p>因为创建 SVG 元素需要指定命名空间，就像需要在 svg 标签上设定 xmlns 为”<a href="http://www.w3.org/2000/svg&quot;。所以构造" target="_blank" rel="noopener">http://www.w3.org/2000/svg&quot;。所以构造</a> SVG 元素的方法是调用createElementNS，并将”<a href="http://www.w3.org/2000/svg&quot;作为参数传入。此外，不同于" target="_blank" rel="noopener">http://www.w3.org/2000/svg&quot;作为参数传入。此外，不同于</a> HTML 元素对象可以直接对一些属性赋值，SVG 元素对象都需要通过调用 setAttribute 方法来设定属性值。</p>
+<h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><p>页面中的 CSS 样式对 SVG 里的元素同样有效。你不需要在 SVG 代码直接嵌入 CSS 代码，放在页面任何一个地方都可以，甚至可以放到单独的 CSS 文件里，使用标记加载到页面上。你甚至可以对 SVG 元素使用 :hover 语法和动画属性。但请注意，有个别的 CSS 属性对 SVG 是不起作用的。例如，background-color 对 SVG 就是无效的，因为 SVG 里使用 fill 属性。</p>
+<pre><code class="css">#myrect {
+  transition: fill .6s ease-out;
+}
+
+#myrect:hover {
+  fill: red;
+}
+</code></pre>
+</section><nav id="post-nav"><span class="prev"><a href="/Babel-Q&amp;A/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/SVG-学习（上）/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

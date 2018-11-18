@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>React v16 小记</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>React v16 小记</h1><h2 class="headline">Apr 23 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#总体变化"><span class="toc-text">总体变化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-核心算法重新实现"><span class="toc-text">1. 核心算法重新实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-体积更加小巧"><span class="toc-text">2. 体积更加小巧</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-更新开源协议"><span class="toc-text">3. 更新开源协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-重写服务器端渲染"><span class="toc-text">4. 重写服务器端渲染</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-一系列新特性"><span class="toc-text">5. 一系列新特性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新特性介绍"><span class="toc-text">新特性介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Fragments-and-Strings-as-new-render-return-types-（支持-render-返回-JSX-数组和字符串）"><span class="toc-text">Fragments and Strings as new render return types （支持 render 返回 JSX 数组和字符串）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#代码示例："><span class="toc-text">代码示例：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#总之，React-v16-的-render-函数执行时，可以有以下返回："><span class="toc-text">总之，React v16 的 render 函数执行时，可以有以下返回：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Error-handling-using-Error-boundaries（船新的异常处理机制-组件层面的-try-catch）"><span class="toc-text">Error handling using Error boundaries（船新的异常处理机制 组件层面的 try-catch）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#React-v16-之前的行为"><span class="toc-text">React v16 之前的行为</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#错误边界的介绍"><span class="toc-text">错误边界的介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#代码示例：-1"><span class="toc-text">代码示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Support-for-Defining-Custom-DOM-Attributes（支持自定义DOM属性）"><span class="toc-text">Support for Defining Custom DOM Attributes（支持自定义DOM属性）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Portals（传送门–以实现一个-Modal-为例）"><span class="toc-text">Portals（传送门–以实现一个 Modal 为例）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#方案一-最简单的实现，利用-state-控制子元素弹窗的展示"><span class="toc-text">方案一 最简单的实现，利用 state 控制子元素弹窗的展示</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#方案二-Modal-外移，进行组件间通信"><span class="toc-text">方案二 Modal 外移，进行组件间通信</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#方案三-React-v16-前常用的方法，借助生命周期动态创建-Modal"><span class="toc-text">方案三 React v16 前常用的方法，借助生命周期动态创建 Modal</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方案四-React-v16-的-Portal-API"><span class="toc-text">方案四 React v16 的 Portal API</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#环境依赖"><span class="toc-text">环境依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol></div><section id="post-body"><h2 id="总体变化"><a href="#总体变化" class="headerlink" title="总体变化"></a>总体变化</h2><h4 id="1-核心算法重新实现"><a href="#1-核心算法重新实现" class="headerlink" title="1. 核心算法重新实现"></a>1. 核心算法重新实现</h4><p>采用了全新的 <strong>Fiber</strong> 架构，以支持一系列新特性和对性能的提高。<br>老架构 <a href="https://claudiopro.github.io/react-fiber-vs-stack-demo/stack.html" target="_blank" rel="noopener">Stack Reconciler demo</a> 新架构 <a href="https://claudiopro.github.io/react-fiber-vs-stack-demo/fiber.html" target="_blank" rel="noopener">Fiber Reconciler demo</a> 的对比。</p>
+<h4 id="2-体积更加小巧"><a href="#2-体积更加小巧" class="headerlink" title="2. 体积更加小巧"></a>2. 体积更加小巧</h4><p>核心文件 <strong>react + react-dom</strong> 大小相比之前的版本减少了 32%。<br>（使用 Rollup 作为构建工具；去除了 DOM 属性的白名单列表）<br><img src="https://i.loli.net/2018/09/09/5b947f27b15ed.png" alt="体积变化"></p>
+<h4 id="3-更新开源协议"><a href="#3-更新开源协议" class="headerlink" title="3. 更新开源协议"></a>3. 更新开源协议</h4><p><strong>BSD license</strong> 改为更宽松的 <strong>MIT license</strong>，响应社区的呼声。</p>
+<h4 id="4-重写服务器端渲染"><a href="#4-重写服务器端渲染" class="headerlink" title="4. 重写服务器端渲染"></a>4. 重写服务器端渲染</h4><p>支持流（ Stream ）传输，可以向客户端更快地发送字节，SSR 性能提升了3倍左右。<br><img src="https://i.loli.net/2018/09/09/5b947f9b47fdd.png" alt="性能提升"></p>
+<h4 id="5-一系列新特性"><a href="#5-一系列新特性" class="headerlink" title="5. 一系列新特性"></a>5. 一系列新特性</h4><h2 id="新特性介绍"><a href="#新特性介绍" class="headerlink" title="新特性介绍"></a>新特性介绍</h2><h4 id="Fragments-and-Strings-as-new-render-return-types-（支持-render-返回-JSX-数组和字符串）"><a href="#Fragments-and-Strings-as-new-render-return-types-（支持-render-返回-JSX-数组和字符串）" class="headerlink" title="Fragments and Strings as new render return types （支持 render 返回 JSX 数组和字符串）"></a>Fragments and Strings as new render return types （支持 render 返回 JSX 数组和字符串）</h4><p>以往 render 返回必须要有根元素，而现在我们可以直接输出数组或者字符串（数字等同字符串）。</p>
+<h5 id="代码示例："><a href="#代码示例：" class="headerlink" title="代码示例："></a>代码示例：</h5><p><em>Returning arrays</em></p>
+<pre><code class="javascript">const Li = () =&gt; (&lt;li &gt;二娃&lt;/li&gt;)
+
+const Members = () =&gt; [
+  // 别忘了加上 key 属性
+  &lt;li key=&#39;1&#39;&gt;大娃&lt;/li&gt;,
+  &lt;Li key=&#39;2&#39; /&gt;
+]
+
+class App extends Component {
+  render () {
+    // 不需要加上一层多余的根元素了
+    return [
+      &lt;div key=&#39;1&#39;&gt;前端组&lt;/div&gt;,
+      &lt;ul key=&#39;2&#39;&gt;
+         &lt;Members /&gt;
+        &lt;li&gt;三娃&lt;/li&gt;
+        &lt;li&gt;四娃&lt;/li&gt;
+      &lt;/ul&gt;
+    ]
+  }
+}
+</code></pre>
+<p><em>Returning string</em></p>
+<pre><code class="javascript">// 直接返回字符串的组件
+const Comment = ({ text }) =&gt; text.replace(&#39;[微笑]&#39;, &#39;:)&#39;)
+
+class App extends Component {
+  render () {
+    return (
+      &lt;div&gt;
+        &lt;Comment text=&#39;任天堂就是世界的主宰，[微笑]&#39; /&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+</code></pre>
+<h5 id="总之，React-v16-的-render-函数执行时，可以有以下返回："><a href="#总之，React-v16-的-render-函数执行时，可以有以下返回：" class="headerlink" title="总之，React v16 的 render 函数执行时，可以有以下返回："></a>总之，React v16 的 render 函数执行时，可以有以下返回：</h5><ul>
+<li>React elements：正常渲染JSX，原生DOM组件或者自定义高阶组件。</li>
+<li>Booleans：如果为布尔值则返回 null，例如：<code>return flag &amp;&amp; &lt;div /&gt;</code>。</li>
+<li>String and numbers：将会被当作文本节点加入DOM中。</li>
+<li>Arrays：多个 elements 以数组形式返回，如上例代码。</li>
+<li>Portals：这是一个 React v16 新加入的特性，会在下文详细介绍。</li>
+<li>null：什么都不渲染。</li>
+</ul>
+<h4 id="Error-handling-using-Error-boundaries（船新的异常处理机制-组件层面的-try-catch）"><a href="#Error-handling-using-Error-boundaries（船新的异常处理机制-组件层面的-try-catch）" class="headerlink" title="Error handling using Error boundaries（船新的异常处理机制 组件层面的 try-catch）"></a>Error handling using Error boundaries（船新的异常处理机制 组件层面的 try-catch）</h4><h5 id="React-v16-之前的行为"><a href="#React-v16-之前的行为" class="headerlink" title="React v16 之前的行为"></a>React v16 之前的行为</h5><p>组件内的异常有可能会影响到 React 的内部状态，进而导致下一轮渲染时出现错误。<br>在之前的版本，React 更多的是交托给开发者自行解决，而没有提供较好的组件层面处理这些异常的方式。</p>
+<ul>
+<li><a href="https://github.com/facebook/react/issues/4026" target="_blank" rel="noopener">TypeError: Cannot read property ‘_currentElement’ of null · Issue #4026 · facebook/react</a></li>
+<li><a href="https://github.com/facebook/react/issues/6895" target="_blank" rel="noopener">Error: performUpdateIfNecessary: Unexpected batch number … · Issue #6895 · facebook/react</a></li>
+<li><a href="https://github.com/facebook/react/issues/8579" target="_blank" rel="noopener">Cannot read property ‘getHostNode’ of null · Issue #8579 · facebook/react</a></li>
+</ul>
+<h4 id="错误边界的介绍"><a href="#错误边界的介绍" class="headerlink" title="错误边界的介绍"></a>错误边界的介绍</h4><p>为了解决这个问题，React v16 引入了“错误边界（Error boundaries）”这一新概念，使用了更有弹性的错误处理策略。错误边界作为特殊的 React 组件，会捕获渲染期间，生命周期方法中以及在其整个树的构造函数中的异常。利用它我们便可以上报这些错误，展示备用 UI 而不是让组件树崩溃。</p>
+<p>注意：错误边界无法捕获其自身的错误，若错误边界尝试渲染错误信息失败，该错误会向上传递。React v16 默认对于未被错误边界捕获的异常，整个组件树都会被卸载。</p>
+<h5 id="代码示例：-1"><a href="#代码示例：-1" class="headerlink" title="代码示例："></a>代码示例：</h5><pre><code class="javascript">class ErrorBoundary extends Component {
+  constructor (props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  componentDidCatch (err, info) {
+    console.log(err, info)
+    this.setState({ hasError: true })
+    // 可以在此处上报错误
+    // reportError(err, info)
+  }
+
+  render () {
+    if (this.state.hasError) {
+      // 显示异常状态的界面
+      // const a = null
+      // console.log(a.b)
+      return &lt;div&gt;小姐姐丑拒了你!&lt;/div&gt;
+    }
+
+    return this.props.children
+  }
+}
+
+// user 为 null 时，该组件会出错
+const Invitation = ({ user }) =&gt; (&lt;div&gt;{user.name}: 小姐姐，有空一起去看电影吗？&lt;/div&gt;)
+
+class App extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      user: { name: &#39;abc&#39; }
+    }
+  }
+
+  onClick () {
+    this.setState({ user: null })
+  }
+
+  render () {
+    return (
+      &lt;div&gt;
+        {/* 用正常组件的方式去使用 */}
+        &lt;ErrorBoundary&gt;
+          &lt;Invitation user={this.state.user} /&gt;
+        &lt;/ErrorBoundary&gt;
+        &lt;button onClick={this.onClick.bind(this)}&gt;丑拒&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+</code></pre>
+<p>React v16 之前有类似但不完善的实现 <strong>unstable_handleError</strong>。</p>
+<pre><code class="javascript">class ErrorBoundary extends React.Component {
+      ...
+      unstable_handleError() {
+        reportError()
+        this.setState({ error: true })
+      }
+
+      render() {
+        if (this.state.error){
+          return &lt;SafeComponent /&gt;
+        } else {
+          return &lt;ComponentWithErrors /&gt;
+        }
+      }
+}
+</code></pre>
+<h4 id="Support-for-Defining-Custom-DOM-Attributes（支持自定义DOM属性）"><a href="#Support-for-Defining-Custom-DOM-Attributes（支持自定义DOM属性）" class="headerlink" title="Support for Defining Custom DOM Attributes（支持自定义DOM属性）"></a>Support for Defining Custom DOM Attributes（支持自定义DOM属性）</h4><pre><code class="javascript">// Your code:
+&lt;div
+  mycustomattribute=&#39;something&#39;
+  自定义属性=&#39;abc&#39;
+  class=&#39;someclass&#39;
+  tabindex=&#39;1&#39;
+  mycustomattributeobj={{}}
+  mycustomattributefn={() =&gt; {}}
+  onclick=&#39;alert(1)&#39;
+/&gt;
+
+// React 15 output:
+&lt;div
+&gt;
+  Hello
+&lt;/div&gt;
+
+// React 16 output:
+&lt;div
+  mycustomattribute=&#39;something&#39;
+  自定义属性=&#39;abc&#39;
+  class=&#39;someclass&#39;
+  tabindex=&#39;1&#39;
+  mycustomattributeobj=&#39;[object Object]&#39;
+&gt;
+  Hello
+&lt;/div&gt;
+</code></pre>
+<p>旧版的 React 会维护一个 DOM 属性的白名单，如果传递的属性不在当中就会被忽略并抛出 warning。React v16 移除了这个白名单，不再忽略未被识别的 HTML 和 SVG 属性，而是将它们的值转换为 String 并传递给 DOM。</p>
+<p>注意：React 官方明确表示，数据不应该存放在标签里，而应该用 state 或者 store 去管理，非要自定义属性的话，最好加上 data-* 前缀。</p>
+<h4 id="Portals（传送门–以实现一个-Modal-为例）"><a href="#Portals（传送门–以实现一个-Modal-为例）" class="headerlink" title="Portals（传送门–以实现一个 Modal 为例）"></a>Portals（传送门–以实现一个 Modal 为例）</h4><h5 id="方案一-最简单的实现，利用-state-控制子元素弹窗的展示"><a href="#方案一-最简单的实现，利用-state-控制子元素弹窗的展示" class="headerlink" title="方案一 最简单的实现，利用 state 控制子元素弹窗的展示"></a>方案一 最简单的实现，利用 state 控制子元素弹窗的展示</h5><p><img src="https://i.loli.net/2018/09/09/5b94abbabcac8.png" alt="方案一"></p>
+<pre><code class="javascript">class App extends Component {
+  constructor (props) {
+    super(props)
+    this.state = { visible: false }
+  }
+
+  showModal = () =&gt; {
+    this.setState({ visible: true })
+  }
+
+  closeModal = () =&gt; {
+    this.setState({ visible: false })
+  }
+
+  render () {
+    return (
+      &lt;div className=&#39;app&#39;&gt;
+        &lt;div className=&#39;hello-top&#39;&gt;
+          &lt;h1&gt;Hello top&lt;/h1&gt;
+          &lt;button onClick={this.showModal}&gt;Show Modal&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div className=&#39;hello-bottom&#39;&gt;
+          &lt;h1&gt;Hello bottom&lt;/h1&gt;
+          {this.state.visible &amp;&amp; &lt;Modal
+            onClose={this.closeModal}
+          &gt;
+            &lt;h1&gt; Modal title &lt;/h1&gt;
+            &lt;p&gt; Modal content&lt;/p&gt;
+          &lt;/Modal&gt;}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+
+class Modal extends Component {
+  render () {
+    return (
+      &lt;div className=&#39;modal&#39;&gt;
+        &lt;span className=&#39;modal-close&#39; onClick={this.props.onClose}&gt;
+          &amp;times;
+        &lt;/span&gt;
+        {this.props.children}
+      &lt;/div&gt;
+    )
+  }
+</code></pre>
+<p>此方案可能受到 z-index 影响，有层叠问题无法完全突出显示，因此需要调整 Modal 在 DOM 中的位置。</p>
+<h5 id="方案二-Modal-外移，进行组件间通信"><a href="#方案二-Modal-外移，进行组件间通信" class="headerlink" title="方案二 Modal 外移，进行组件间通信"></a>方案二 Modal 外移，进行组件间通信</h5><p><img src="https://i.loli.net/2018/09/09/5b94ac74be0c8.png" alt="方案二"></p>
+<p>对 Modal 组件出现的位置进行移动，放在 DOM 结构最外部，使其不受调用位置的层级影响。但这就需要 Modal 组件和触发其出现的深层次组件进行通信，React 组件间通信无外乎 props 或 context，或通过 Redux、Mobx 等工具，这样的做法太过复杂，不利于维护。</p>
+<h5 id="方案三-React-v16-前常用的方法，借助生命周期动态创建-Modal"><a href="#方案三-React-v16-前常用的方法，借助生命周期动态创建-Modal" class="headerlink" title="方案三 React v16 前常用的方法，借助生命周期动态创建 Modal"></a>方案三 React v16 前常用的方法，借助生命周期动态创建 Modal</h5><p><img src="https://i.loli.net/2018/09/09/5b94ae4346a95.png" alt="方案三"></p>
+<pre><code class="javascript">class Modal extends Component {
+  constructor (props) {
+    super(props)
+    this.modalTarget = document.createElement(&#39;div&#39;)
+    document.body.appendChild(this.modalTarget)
+  }
+
+  componentDidMount () {
+    this.renderModal()
+  }
+
+  componentDidUpdate () {
+    this.renderModal()
+  }
+
+  componentWillUnmount () {
+    // 清理DOM防止内存泄露
+    ReactDOM.unmountComponentAtNode(this.modalTarget)
+    document.body.removeChild(this.modalTarget)
+  }
+
+  renderModal () {
+    // 第一种
+    ReactDOM.render(
+      (
+        &lt;div className=&#39;modal&#39;&gt;
+          &lt;span className=&#39;modal-close&#39; onClick={this.props.onClose}&gt;
+            &amp;times;
+          &lt;/span&gt;
+          {this.props.children}
+        &lt;/div&gt;
+      ),
+      this.modalTarget
+    )
+    // 第二种 现在这个API已经被废除了
+    // React.unstable_renderSubtreeIntoContainer(
+    //   this, // 这个参数就是用来指定新的 React组件树根节点的父组件，连接Context
+    //   (
+    //     &lt;div className=&#39;modal&#39;&gt;
+    //       &lt;span className=&#39;modal-close&#39; onClick={this.props.onClose}&gt;
+    //         &amp;times;
+    //       &lt;/span&gt;
+    //       {this.props.children}
+    //     &lt;/div&gt;
+    //   ),
+    //   this.modalTarget
+    // )
+  }
+
+  render () {
+    return null
+  }
+}
+</code></pre>
+<h4 id="方案四-React-v16-的-Portal-API"><a href="#方案四-React-v16-的-Portal-API" class="headerlink" title="方案四 React v16 的 Portal API"></a>方案四 React v16 的 Portal API</h4><p>在 React v16 中，使用 Portal 创建 Modal 简单多了，不需要牵扯到 componentDidMount、componentDidUpdate，也不用手动清理DOM，直接在 render 函数里使用，便能使这个 render 的结果挂载在其他 DOM 节点上。</p>
+<pre><code class="javascript">class Modal extends Component {
+  constructor (props) {
+    super(props)
+    this.modalTarget = document.createElement(&#39;div&#39;)
+    document.body.appendChild(this.modalTarget)
+  }
+
+  componentWillUnmount () {
+    document.body.removeChild(this.modalTarget)
+  }
+
+  render () {
+    // React 并不会创建一个新的 div 节点，他只是将它渲染到 modalTarget 这个DOM节点上
+    return ReactDOM.createPortal(
+      &lt;div className=&#39;modal&#39;&gt;
+        &lt;span className=&#39;modal-close&#39; onClick={this.props.onClose}&gt;
+          &amp;times;
+        &lt;/span&gt;
+        {this.props.children}
+      &lt;/div&gt;,
+      this.modalTarget
+    )
+  }
+}
+</code></pre>
+<p>Portals 组件与正常的 React Elements 并没有什么差异。在事件冒泡传递中，Portal 内的事件依然会向上传递到外层，所以无论逻辑上还是写法上 Portals 都是与当前组件是“一体”的，这是其他三种方案都不具有的。</p>
+<h2 id="环境依赖"><a href="#环境依赖" class="headerlink" title="环境依赖"></a>环境依赖</h2><p>总体来说新的特性能够解决一些日常开发的痛点，开发体验也越来越好了，不过 React v16 因为依赖ES6的一些集合数据结构例如 <strong>Map</strong> 和 <strong>Set</strong> 所以，兼容性要求比较高。</p>
+<p>如果需要兼容一些老的浏览器（&lt;IE11）需要上 polyfill 比如 core.js 或 babel-polyfill。</p>
+<pre><code class="javascript">import &#39;core-js/es6/map&#39;
+import &#39;core-js/es6/set&#39;
+
+import React from &#39;react&#39;
+import ReactDOM from &#39;react-dom&#39;
+
+ReactDOM.render(
+  &lt;h1&gt;Hello, world!&lt;/h1&gt;,
+  document.getElementById(&#39;root&#39;)
+)
+</code></pre>
+<p>另外 React v16 还依赖了 <strong>requestAnimationFrame</strong> 方法，同样如果浏览器不支持的话我们需要提供一个 shim，例如：</p>
+<pre><code class="javascript">global.requestAnimationFrame = function(callback) {
+    setTimeout(callback)
+}
+</code></pre>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://reactjs.org/docs/react-component.html#render" target="_blank" rel="noopener">React.Component – React</a></li>
+<li><a href="https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html" target="_blank" rel="noopener">Error Handling in React 16 – React Blog</a></li>
+<li><a href="https://reactjs.org/blog/2017/09/08/dom-attributes-in-react-16.html" target="_blank" rel="noopener">DOM Attributes in React 16 – React Blog</a></li>
+<li><a href="https://reactjs.org/docs/portals.html" target="_blank" rel="noopener">Portals – React</a></li>
+<li><a href="https://reactjs.org/blog/2017/09/26/react-v16.0.html" target="_blank" rel="noopener">React v16.0 – React Blog</a></li>
+</ul>
+</section><nav id="post-nav"><span class="prev"><a href="/React-v16-3-小记/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/React-服务端渲染实践/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

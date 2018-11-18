@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Babel Q&amp;A</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>Babel Q&A</h1><h2 class="headline">Oct 25 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Babel-是做什么的？"><span class="toc-text">Babel 是做什么的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Babel-要怎么使用？"><span class="toc-text">Babel 要怎么使用？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#调用方式"><span class="toc-text">调用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#命令行运行"><span class="toc-text">命令行运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件中引入"><span class="toc-text">文件中引入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#浏览器环境"><span class="toc-text">浏览器环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#构建工具集成"><span class="toc-text">构建工具集成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#调用核心包-babel-core"><span class="toc-text">调用核心包 babel-core</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数配置"><span class="toc-text">参数配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#presets"><span class="toc-text">presets</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#plugins"><span class="toc-text">plugins</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#执行顺序"><span class="toc-text">执行顺序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#env"><span class="toc-text">env</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#babel-polyfill"><span class="toc-text">babel-polyfill</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#babel-runtime-与-babel-plugin-transform-runtime"><span class="toc-text">babel-runtime 与 babel-plugin-transform-runtime</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Babel-是如何工作？"><span class="toc-text">Babel 是如何工作？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#解析"><span class="toc-text">解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#转换"><span class="toc-text">转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成"><span class="toc-text">生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开发插件"><span class="toc-text">开发插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#需求"><span class="toc-text">需求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AST"><span class="toc-text">AST</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#visitor"><span class="toc-text">visitor</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后记"><span class="toc-text">后记</span></a></li></ol></div><section id="post-body"><p>最近几年，Babel 成了每位前端开发者的必备工具，而我虽然从接触前端起就对 Babel 用了很久，但基本上也是沿用前人的弄好的配置。使用上只停留在和 webpack 结合开发客户端项目；对配置文件的各个字段也是大概了解；围绕着 Babel 涌现出了非常大规模和多样化的生态系统，比如 babel-cli、babel-core、babel-runtime、babel-node、babel-polyfill 但我基本分不清楚它们都是干嘛的；更不要说问我 Babel 的原理了；也没想过要去写 Babel 的插件。因此，这篇文章便想花点功夫来好好理一下，解答自己的对 Babel 一些疑问。</p>
+<p><img src="https://i.loli.net/2018/11/02/5bdbcc26a42d5.png" alt="logo"></p>
+<h2 id="Babel-是做什么的？"><a href="#Babel-是做什么的？" class="headerlink" title="Babel 是做什么的？"></a>Babel 是做什么的？</h2><blockquote>
+<p>The compiler for next generation JavaScript.</p>
+</blockquote>
+<p>这是官网的 solgan ，翻译过来就是“下一代 JavaScript 编译器”。</p>
+<p>近些年 JavaScript 发展迅猛，各种新标准和新提案层出不穷，带来的新特性为开发提供极大便利。但与之相对的是浏览器的版本支持和兼容性问题，使我们不能放开去使用这些新语法。Babel 就是为了解决这个问题，作为一个转码器，它可以将代码中的 ES6/ES2017/ES2018/… 等新语法转为 ES5 等兼容性较好的语法，从而在现有环境执行。</p>
+<p><img src="https://i.loli.net/2018/11/18/5bf181136652e.png" alt="af"></p>
+<p>这样说来，我感觉相对于编译器 compiler，叫它转译器 transpiler 更准确，因为它只是把同种语言的高版本规则翻译成低版本规则，而不像编译器那样，输出的是另一种更低级的语言代码。</p>
+<pre><code class="javascript">// 转换前
+const square = n =&gt; n * n
+
+// 转换后
+var square = function square(n) {
+  return n * n
+}
+</code></pre>
+<p>上面的原始代码用了箭头函数，这个特性还没有得到广泛支持，Babel 将其转为了普通函数。不过Babel 的用途并不止于此，它能通过语法扩展，支持转译像 React 所用的 JSX 语法。</p>
+<h2 id="Babel-要怎么使用？"><a href="#Babel-要怎么使用？" class="headerlink" title="Babel 要怎么使用？"></a>Babel 要怎么使用？</h2><h3 id="调用方式"><a href="#调用方式" class="headerlink" title="调用方式"></a>调用方式</h3><p>由于 JavaScript 社区没有统一的构建工具、框架、平台等，因此 Babel 集成了对所有主流工具和环境的支持。但这几种方式只有入口不同而已，调用的 Babel 内核，处理方式都是一样的。</p>
+<h4 id="命令行运行"><a href="#命令行运行" class="headerlink" title="命令行运行"></a>命令行运行</h4><p>通过 babel-cli 可以命令行下使用 Babel 命令转译文件/文件夹。</p>
+<pre><code class="bash">$ npm install --global babel-cli
+
+$ babel my-file.js
+
+$ babel example.js -o out.log // 将转译结果输出到指定文件
+
+$ babel src -d lib // 将一个文件夹转译成新文件夹
+
+$ babel src -d lib -s // 生成 source map 文件
+</code></pre>
+<p>此外，babel-cli 工具带了一个 babel-node 命令，用法类似于 node 命令，提供了支持 Babel 转译的 REPL 环境以及直接运行新语法的代码。</p>
+<pre><code class="bash">$ babel-node // 进入 REPL 环境
+&gt; (x =&gt; x * 2)(1)
+2
+
+$ babel-node example.js // 执行文件
+</code></pre>
+<h4 id="文件中引入"><a href="#文件中引入" class="headerlink" title="文件中引入"></a>文件中引入</h4><p>babel-register 通过改写 require 命令，为它加上一个钩子。每当使用 require 加载.js、.jsx、.es和.es6后缀名的文件时，就会触发 Babel 进行转译。</p>
+<p>例如我们项目中的入口文件是 <code>index.js</code> 。</p>
+<p>然后在项目中创建 register.js 文件并添加如下代码：</p>
+<pre><code class="javascript">require(&#39;babel-register&#39;)
+require(&#39;./index.js&#39;)
+</code></pre>
+<p>运行时则执行：</p>
+<pre><code class="bash">$ node register.js
+</code></pre>
+<p><em>注意</em>：当前文件 <code>register.js</code> 中的代码不会被转译，因为 Node 会在 Babel 转译它之前就将它执行了。</p>
+<h4 id="浏览器环境"><a href="#浏览器环境" class="headerlink" title="浏览器环境"></a>浏览器环境</h4><p>Babel也可以用于浏览器环境，使用 babel-standalone 模块提供的浏览器版本，将其插入网页。</p>
+<pre><code class="html">&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.4.4/babel.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/Babel&quot;&gt;
+// Your code
+&lt;/script&gt;
+</code></pre>
+<p>Babel 将在网页中实时进行代码转译，因此对性能会有影响，一般只用在简单的 demo，不推荐在生产环境使用。</p>
+<h4 id="构建工具集成"><a href="#构建工具集成" class="headerlink" title="构建工具集成"></a>构建工具集成</h4><p>这是我们日常开发项目中最常用的方式</p>
+<p>下面 webpack 配置文件中的一段：</p>
+<pre><code class="javascript">module: {
+    rules: [
+        {
+            test: /\.js$/,
+            use: {
+                loader: &#39;babel-loader&#39;
+            },
+            exclude: &#39;/node_modules/&#39;
+        }
+    ]
+}
+</code></pre>
+<h4 id="调用核心包-babel-core"><a href="#调用核心包-babel-core" class="headerlink" title="调用核心包 babel-core"></a>调用核心包 babel-core</h4><p>babel-core 即 Babel 转译器本身，提供了 Babel 的转译 API，上面的所有工具最终也是会调用它。</p>
+<pre><code class="javascript">const babel = require(&#39;babel-core&#39;)
+
+// 字符串转码
+babel.transform(&#39;() =&gt; {}&#39;, options)
+// =&gt; { code, map, ast }
+
+// 文件转码（异步）
+babel.transformFile(&#39;filename.js&#39;, options, (err, result) =&gt; {
+  result // =&gt; { code, map, ast }
+})
+
+// 文件转码（同步）
+babel.transformFileSync(&#39;filename.js&#39;, options)
+// =&gt; { code, map, ast }
+
+// Babel AST转码
+babel.transformFromAst(ast, code, options)
+// =&gt; { code, map, ast }
+</code></pre>
+<h3 id="参数配置"><a href="#参数配置" class="headerlink" title="参数配置"></a>参数配置</h3><p>如果仅仅是按着上面的代码，装完工具就直接运行，会发现代码是没有被转译的，因为我们并没有告诉 Babel 应该遵守什么样的规则去转换。</p>
+<p>传递配置参数有这几种方式：</p>
+<ul>
+<li>工具使用时传入 如：babel-loader 和 babel-register 的 options</li>
+<li>命令行使用时后面接参数：babel-node –presets react App.jsx</li>
+<li>还可以在 package.json 里在 babel 字段添加设置</li>
+<li>建议还是使用一个单独的 .babelrc 文件，把设置都放置在这里</li>
+</ul>
+<p>Babel 的参数配置主要有 presets 和 plugins 、env 三个字段。</p>
+<h4 id="presets"><a href="#presets" class="headerlink" title="presets"></a>presets</h4><p>presets 字段是官方提供的转换规则，目前有以下几种：</p>
+<ul>
+<li>es201x, latest。这些是每年度纳入到标准规范的语法。例如 es2015 有 <code>arrow-functions</code>，es2016 有 <code>transform-exponentiation-operator</code>，es2017 有 <code>syntax-trailing-function-commas</code>。latest 是一个每年更新的 preset，包含了往年所有 es201x。</li>
+<li>stage-x，TC39 发布的当年语法规范提案进展，低级的 stage 会包含所有高级 stage 的内容。<br>stage 0 - 设想，如：<code>transform-function-bind</code> bind 运算符 ::。<br>stage 1 - 提案，如：<code>transform-export-extensions</code> 额外的 export 语法 <code>export * as b from &quot;a&quot;</code>。<br>stage 2 - 初稿，如：<code>syntax-dynamic-import</code>。<br>stage 3 - 候选，如：<code>transform-object-rest-spread</code> 对象的解构赋值和不定参数。<br>stage 4 - 完成，即 es2015 ~ es201x 的内容，等于 lastest,实际上不存在此模块。    </li>
+<li>其他内容，包括 env, react, flow, typescript 等。这里最重要的是 env，是目前官方最推荐用的，因为它能够灵活得指定目标环境来获得转换规则。</li>
+</ul>
+<p>一个典型的 presets 字段如下，使用时需要安装对应的 babel-preset-xxx：</p>
+<pre><code class="javascript">{
+  &quot;presets&quot;: [
+    [
+      &quot;env&quot;, // 指定目标环境，当不设置 env 的 options 时，效果等同于 latest
+      {
+        &quot;targets&quot;: { // 需要支持的环境，可选例如：chrome, edge, firefox, safari, ie, ios, node，甚至可以制定版本，如node: 6.5。也使用node: current代表使用当前的版本。
+          &quot;browsers&quot;: [ // 浏览器列表，使用的是browserslist，可选例如：last 2 versions, &gt; 5%。
+            &quot;last 2 versions&quot;,
+            &quot;Chrome &gt;= 58&quot;,
+            &quot;ie &gt;= 10&quot;
+          ],
+          &quot;node&quot;: &quot;8.00&quot;
+        },
+        &quot;modules&quot;: false, // 是否将ES6模块语法转换为另一种模块类型，取值可以是 amd | umd | systemjs | commonjs，默认为 commonjs。
+        &quot;debug&quot;: false // 编译是否去掉console.log。
+      }
+    ],
+    &quot;react&quot;, // react jsx语法编译
+    &quot;stage-0&quot; // 兼容新特性语法
+  ]
+}
+</code></pre>
+<h4 id="plugins"><a href="#plugins" class="headerlink" title="plugins"></a>plugins</h4><p>上面的 presets 实际上就是一堆 plugins 的集合，我们也可以单独添加插件以引入某个功能，比如以下的设置就会引入编译装饰器语法的功能。</p>
+<pre><code class="bash">$ npm install --save-dev babel-plugin-transform-decorators-legacy
+</code></pre>
+<pre><code class="javascript">{
+  &quot;plugins&quot;: [&quot;transform-decorators-legacy&quot;]
+}
+</code></pre>
+<p>此外，对于需要传递参数的插件，就需要写成数组形式，前面为插件名，后面为参数列表。</p>
+<pre><code class="javascript">[
+  &quot;import&quot;,
+  [{
+    &quot;libraryName&quot;: &quot;antd&quot;,
+    &quot;libraryDirectory&quot;: &quot;lib&quot;,
+    &quot;style&quot;: &quot;css&quot;
+  },
+  {
+    &quot;libraryName&quot;: &quot;antd-mobile&quot;,
+    &quot;style&quot;: true
+  }]
+]
+</code></pre>
+<h4 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h4><ul>
+<li>所有 plugins 会运行在所有 presets 之前。</li>
+<li>plugins 内部按照数组的增序顺序执行。</li>
+<li>presets 的顺序则相反，作者认为大部分人会写如 [‘es2015’, ‘stage-0’]，这样就得先执行 stage-0 再执行 es2015，确保 Babel 不报错。</li>
+</ul>
+<h4 id="env"><a href="#env" class="headerlink" title="env"></a>env</h4><p>此外配置文件中还有一个名为 env 的字段用于指定在不同环境下使用的配置。比如 production 和 development 两个环境使用不同的配置，就可以通过这个字段来配置。env 字段的从 process.env.BABEL_ENV 获取，如果 BABEL_ENV 不存在，则从 process.env.NODE_ENV 获取，如果 NODE_ENV 还是不存在，则取默认值 “development”。</p>
+<pre><code class="javascript">{
+  &quot;env&quot;: {
+    &quot;development&quot;: {
+      &quot;presets&quot;: [...],
+      &quot;plugins&quot;: [...]
+    },
+    &quot;test&quot;: {
+      &quot;presets&quot;: [...],
+      &quot;plugins&quot;: [...]
+    }
+  }
+}
+</code></pre>
+<h3 id="babel-polyfill"><a href="#babel-polyfill" class="headerlink" title="babel-polyfill"></a>babel-polyfill</h3><p>即便你已经用 Babel 转译了代码，但这还不算完，你可能会遇到诸如 <code>Uncaught TypeError: Array.from is not a function</code> 这种 API 缺失的报错，从而运行失败。</p>
+<p>其原因是 Babel 编译时只转换语法，而不转换部分 API，例如 Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise 等全局对象，以及全局对象上的静态方法（比如 Object.assign）和实例方法（比如 Array.prototype.map），以及 Regenerator（用于generators / yield）都不会转码。</p>
+<p><img src="https://i.loli.net/2018/11/18/5bf18091a0d7a.png" alt="p1"></p>
+<p>core-js 标准库提供了上述的前三类的 polyfill，regenerator 是 generators、yield、async 及 await 等异步相关 API的 polyfill，babel-polyfill 实现上则是对 core-js 和 regenerator 两个包的封装。</p>
+<p><img src="https://i.loli.net/2018/11/18/5bf18091666ac.png" alt="p2"></p>
+<p>polyfill 代码需要在所有其他代码前先被调用，通常使用方式如下：</p>
+<pre><code class="javascript">// 项目代码头部引入
+import &#39;babel-polyfill&#39;
+</code></pre>
+<pre><code class="javascript">// 通过构建工具集成到项目中，以下为 Webpack 配置
+module.exports = { entry: [&#39;babel-polyfill&#39;, &#39;./index/js&#39;] }
+</code></pre>
+<p>由于 babel-polyfill 是在运行时直接在全局判断是否需要添加 API，因此优缺点都很明显。<br>优点：一次性解决所有兼容性问题，而且是全局的，浏览器的控制台也可以使用。<br>缺点：1.打包后的文件体积会偏大（近90kb）2.污染全局对象    </p>
+<p>babel-polyfill 在开发项目中使用尚可，但不适合于开发类库（library），这时候通常会使用下面的模块来替代。</p>
+<h3 id="babel-runtime-与-babel-plugin-transform-runtime"><a href="#babel-runtime-与-babel-plugin-transform-runtime" class="headerlink" title="babel-runtime 与 babel-plugin-transform-runtime"></a>babel-runtime 与 babel-plugin-transform-runtime</h3><p>babel-runtime 也对 core-js 和 regenerator 两个包进行了封装，但运行方法有所不同，它会在转码时检查代码中是否运用了相关的 API，然后按需引入对应的 polyfill，并会对 API 会进行重命名，防止全局污染，但也因此不支持类似 Array.prototype.map 这样的原型链上的实例方法。</p>
+<pre><code class="javascript">// 转换前
+const promise = new Promise
+
+// 转换后
+&quot;use strict&quot;
+
+var _promise = require(&quot;babel-runtime/core-js/promise&quot;);
+var _promise2 = _interopRequireDefault(_promise);
+function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; };
+var promise = new _promise2.default();
+</code></pre>
+<p>babel-runtime 除了提供 polyfill 外，还有提供 helpers 的功能。</p>
+<p>为了实现 ECMAScript 规范的细节，Babel 会在转码过程中产生一些助手方法，这些助手方法通常会特别长并且会被添加到每一个文件的顶部。</p>
+<pre><code class="javascript">class A {
+  method() {}
+}
+</code></pre>
+<pre><code class="javascript">function _classCallCheck(instance, Constructor) {
+  ... // 此处省略几百字
+}
+
+function _createClass(instance, obj) {
+  ... // 此处省略几百字
+}
+
+
+let A = function () {
+  function A() {
+    _classCallCheck(this, A)
+  }
+
+  _createClass(A, [{
+    key: &quot;method&quot;,
+    value: function method() {}
+  }])
+
+  return A
+}()
+</code></pre>
+<p>这样的话就容易出现很多文件中有存在重复代码，因此我们通常会通过 babel-plugin-transform-runtime 配合 babel-runtime，来把它们统一从一个单一的“运行时（runtime）”中导入。</p>
+<pre><code class="javascript">import _classCallCheck from &quot;babel-runtime/helpers/classCallCheck&quot;
+import _createClass from &quot;babel-runtime/helpers/createClass&quot;
+
+......
+</code></pre>
+<h2 id="Babel-是如何工作？"><a href="#Babel-是如何工作？" class="headerlink" title="Babel 是如何工作？"></a>Babel 是如何工作？</h2><p>和编译器类似，Babel 工作过程可以分三个阶段：解析（parse），转换（transform），生成（generate）。</p>
+<p><img src="https://i.loli.net/2018/11/18/5bf16df96a901.png" alt="流程"></p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>Babel 使用的解析引擎是 babylon，babylon 并非由 Babel 团队自己开发的，而是 fork 的 acorn 项目。很巧的是，acron 的作者正之一也是我长期使用的 ProseMirror 编辑器的作者 Marijn Haverbeke 大神。</p>
+<pre><code class="javascript">import * as babylon from &#39;babylon&#39;
+
+const code = &#39;const square = n =&gt; n * n&#39;
+
+const ast = babylon.parse(code)
+console.log(ast)
+</code></pre>
+<p>Babel 生成 AST 的过程会进行词法分析和语法分析，因此如果在解析过程中，出现了不规范的代码，就会报错。不只是 Babel，我们常用各种代码格式化、自动补全、高亮、错误检查等工具基本也是基于对 AST 静态分析实现的。</p>
+<h3 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h3><p>babel-traverse 提供了深度优先遍历 AST 的能力，同时插件在这一步通过进行替换、移除和添加节点等操作来改变 AST。</p>
+<pre><code class="javascript">import traverse from &#39;babel-traverse&#39;
+
+...
+
+traverse(ast, {
+  enter(path) {
+    if (
+      path.node.type === &#39;Identifier&#39; &amp;&amp;
+      path.node.name === &#39;n&#39;
+    ) {
+      path.node.name = &#39;x&#39;;
+    }
+  }
+})
+</code></pre>
+<h3 id="生成"><a href="#生成" class="headerlink" title="生成"></a>生成</h3><p>babel-generator 读取 AST 并将其转换为代码和源码映射。</p>
+<pre><code class="javascript">import generate from &#39;babel-generator&#39;
+
+...
+
+const output = generate(ast, { /* options */ }, code)
+
+console.log(output)
+// var square = function square(x) {
+//   return x * x
+// }
+</code></pre>
+<h3 id="开发插件"><a href="#开发插件" class="headerlink" title="开发插件"></a>开发插件</h3><h4 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h4><p>在日常开发过程中，有时候会添加 console.log 来帮助调试排查问题，但是这些 log 并不太适合发布到生产环境，可以通过编写一个插件来在生产环境打包时进行移除，同时我们在代码中自定义了一个 log 方法用于上报错误，书写这个方法等同于调用 console.error，我们也需要在代码转译时进行替换。</p>
+<h4 id="AST"><a href="#AST" class="headerlink" title="AST"></a>AST</h4><p>既然我们要做的事情是转换 AST，那么首先就需要知道源代码的 AST 和目标代码的 AST 有什么区别，<a href="https://astexplorer.net/#/Z1exs6BWMq" target="_blank" rel="noopener">AST Explorer</a> 是一个能够实时查看代码对应 AST 的网站，能方便我们分析程序。</p>
+<p>下图所示是 console.log 的 AST：</p>
+<p><img src="https://i.loli.net/2018/11/18/5bf1738abe0fb.png" alt="AST"></p>
+<p>可以看到每次节点都有 type、start，end 这几个属性，它们分别表示节点的词法类型和在实际代码中的起始位置。每个节点还有自己的一些特殊属性，有些属性成为了子节点，这都是我们分析 AST 的关键。关于 Babel AST 节点类型的详细定义可见文档：<a href="https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md" target="_blank" rel="noopener">https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md</a></p>
+<h4 id="visitor"><a href="#visitor" class="headerlink" title="visitor"></a>visitor</h4><p>Babel 的插件体系提供了一个 visitor 对象供我们访问 AST 里的具体节点，比如我这里要访问的是函数调用类型的节点：</p>
+<pre><code class="javascript">const visitor = {
+  CallExpression(){
+    ...
+  }
+}
+</code></pre>
+<p>由于深度优先遍历会让每个节点都会被访问两次，一次是向下遍历代表进入（enter），一次是向上退出（exit）。因此实际上每个节点都会有 enter 和 exit 方法，在实际操作的时候需要注意这种遍历方式可能会引起的一些问题，上述例子是省略掉 enter 的简写。</p>
+<pre><code class="javascript">const visitor = {
+  CallExpression(){
+    enter() {},
+    exit() {}
+  }
+}
+</code></pre>
+<p>visitor 中的方法接收一个 path 参数，它表示两个节点之间的连接，通过这个对象我们可以访问到节点、父节点以及进行一系列跟节点操作相关的方法（类似 DOM 的操作）。</p>
+<pre><code class="javascript">module.exports = function (babel) {
+    const { types: t } = babel
+    const visitor = {
+      CallExpression(path){
+        // 判断是否为 log 调用
+        if (path.node.callee.name === &#39;log&#39;) {
+          // 构造新的 AST 替换节点
+          path.replaceWith(t.CallExpression(
+              t.MemberExpression(t.identifier(&#39;console&#39;), t.identifier(&#39;error&#39;)),
+              path.node.arguments
+          ))
+        }
+
+        // 判断是否为 console.log 调用
+        if(t.isMemberExpression(path.node.callee) &amp;&amp;
+          path.get(&#39;callee&#39;).get(&#39;object&#39;).get(&#39;name&#39;).node === &#39;console&#39;){
+          // 移除节点
+          path.remove()
+        }
+      }
+    }
+
+    return {
+        visitor
+    }
+}
+</code></pre>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>想起最近 Babel 7 好像出了几个月了，有时间也了解下，把项目升级上去吧….</p>
+</section><nav id="post-nav"><span class="prev"></span><span class="next"><a href="/SVG-学习（下）/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>

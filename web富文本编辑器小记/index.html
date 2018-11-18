@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Web富文本编辑器小记</title><link rel="shortcut icon" href="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css"><script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/about">About</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/"><img class="2x" id="avatar" src="https://i.loli.net/2018/08/26/5b82359902af2.jpeg"></a><h5>「Stay Hungry, Stay Foolish.」</h5></header></section></div><section class="post" id="wrapper"><article><header><h1>Web富文本编辑器小记</h1><h2 class="headline">Aug 14 2018<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#编辑容器"><span class="toc-text">编辑容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#contenteditable-”true”"><span class="toc-text">contenteditable=”true”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#document-designMode-“on”"><span class="toc-text">document.designMode = “on”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#user-modify-read-only"><span class="toc-text">user-modify: read-only;</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#光标选区"><span class="toc-text">光标选区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#selection"><span class="toc-text">selection</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#术语"><span class="toc-text">术语</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#主要属性"><span class="toc-text">主要属性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#主要方法"><span class="toc-text">主要方法</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Range"><span class="toc-text">Range</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#主要属性-1"><span class="toc-text">主要属性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#主要方法-1"><span class="toc-text">主要方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作内容"><span class="toc-text">操作内容</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#document-execCommand"><span class="toc-text">document.execCommand()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#语法"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#相关方法"><span class="toc-text">相关方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#缺陷"><span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#自定义渲染"><span class="toc-text">自定义渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#原理"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#示例-1"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#优点"><span class="toc-text">优点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结尾"><span class="toc-text">结尾</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol></div><section id="post-body"><p>开发公司知识库的编辑器已有大半年了，作为RD，我也只停留在熟悉框架所提供的API层面，实现一些功能模块，但对内部实现细节却不甚了解，借此机会希望能对 Web 富文本编辑器原理有更深入的认识。</p>
+<h2 id="编辑容器"><a href="#编辑容器" class="headerlink" title="编辑容器"></a>编辑容器</h2><p>说起 Web 上的编辑，首先都会想到 input 和 textarea 两大输入框标签，但它们都只支持纯文本输入，而不支持包含其他 HTML 标签，如果在其中增加带格式的内容，则会被去格式，只保留文本内容。</p>
+<p>通常为了创建一个能内嵌 HTML 并能够编辑的容器，有以下几种方法：</p>
+<h4 id="contenteditable-”true”"><a href="#contenteditable-”true”" class="headerlink" title="contenteditable=”true”"></a>contenteditable=”true”</h4><p>contentEditable 属性规定了是否可编辑元素内的内容，它可以作用于页面的任何标签，值可以设置为 true 或 false，如果没有值的话，会从父元素继承。<br>另外，通过 isContentEditable 返回 true 或 false，可以判断某个元素是否可编辑。</p>
+<pre><code class="html"> &lt;div class=&quot;editor&quot; contenteditable&gt;
+    &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+    &lt;hr/&gt;
+    &lt;p contenteditable=&quot;false&quot;&gt;&lt;/p&gt;
+ &lt;/div&gt;
+</code></pre>
+<p>据说 IE/Edge 在源码层依赖 Word，于是 contentEditable 就相当于开启了 “Word” 的编辑模式，大家可以去感受一下。</p>
+<h4 id="document-designMode-“on”"><a href="#document-designMode-“on”" class="headerlink" title="document.designMode = “on”"></a>document.designMode = “on”</h4><p>通过设置文档的 “designMode” 属性为 “on” ，可以让<strong>整个页面</strong>都可以编辑，这时页面中所有元素的 isContentEditable 属性都会变为 true。<br>通常在使用这个方法时会把要编辑的区域放在一个 iframe 元素中。</p>
+<pre><code class="html">  &lt;iframe id=&quot;editor&quot; src=editor.html&quot;&gt;&lt;/iframe&gt;
+</code></pre>
+<pre><code class="javascript">window.addEventListener(&quot;load&quot;, function() {
+  var editorDocument = document.getElementById(&quot;editor&quot;).contentWindow.document
+  editorDocument.designMode = &quot;on&quot;
+  editorDocument.documentElement.isContentEditable   //true
+  editorDocument.body.isContentEditable   //true
+  editorDocument.querySelector(&quot;p&quot;).isContentEditable   //true
+})
+</code></pre>
+<h4 id="user-modify-read-only"><a href="#user-modify-read-only" class="headerlink" title="user-modify: read-only;"></a>user-modify: read-only;</h4><p>这家伙是一个 CSS 属性！但其功能不可小觑，称得上是 CSS 版的 contentEditable。但由于兼容性太差，基本上很少会用这个属性。</p>
+<pre><code class="css">user-modify: read-only;   // 默认值，只读
+user-modify: read-write;  // 读写，支持富文本
+user-modify: read-write-plaintext-only;  // 读写，只支持纯文本
+</code></pre>
+<p>注意：在使用这个属性的时候，isContentEditable 是不会变化的。</p>
+<p>综述这几种方法，contenteditable=”true” 在兼容性和易用性上都是最好的，因此也是大部分富文本编辑器所采用的方式。</p>
+<h2 id="光标选区"><a href="#光标选区" class="headerlink" title="光标选区"></a>光标选区</h2><p>在富文本编辑器中，开发者需要有能力来控制编辑框中光标的各种状态信息，位置信息等。浏览器提供了 Selection 对象和 Range 对象来操作光标。</p>
+<h4 id="selection"><a href="#selection" class="headerlink" title="selection"></a>selection</h4><blockquote>
+<p>Selection 对象表示用户选择的文本范围或插入字符的当前位置。它代表页面中的文本选区，可能横跨多个元素。文本选区由用户拖拽鼠标经过文字而产生。</p>
+</blockquote>
+<p>我们可以通过 window.getSelection() 获取到当前页面的 Selection 对象。该对象上有一系列属性和方法，可用于检查或修改光标选区。</p>
+<h5 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h5><p>锚点（anchor）<br>锚指的是一个选区的起始点。当我们使用鼠标框选一个区域的时候，锚点就是我们鼠标按下瞬间的那个点。在用户拖动鼠标时，锚点是不会变的。</p>
+<p>焦点（focus）<br>选区的焦点是该选区的终点，当您用鼠标框选一个选区的时候，焦点是你的鼠标松开瞬间所记录的那个点。随着用户拖动鼠标，焦点的位置会随着改变。</p>
+<p>范围（range）<br>范围指的是文档中连续的一部分。一个范围包括整个节点，也可以包含节点的一部分，例如文本节点的一部分。用户通常下只能选择一个范围，但是有的时候用户也有可能选择多个范围（例如当用户按下 Control 按键并框选多个区域时，Chrome 中禁止了这个操作）。这个范围会被作为range对象返回。Range对象也能通过DOM创建、增加、删减。</p>
+<h5 id="主要属性"><a href="#主要属性" class="headerlink" title="主要属性"></a>主要属性</h5><p>anchorNode 和 focusNode：该选区起点和终点所在的节点（Node）。</p>
+<p>anchorOffset 和 focusOffset：返回一个数字，其表示的是选区起点或终点在 anchorNode 或 focusNode 中的位置偏移量。<br>1.如果 anchorNode 是文字节点，那么返回的就是从该文字节点的第一个字开始，直到被选中的第一个字之间的字数（如果第一个字就被选中，那么偏移量为零）。<br>2.如果 anchorNode 是一个元素，那么返回的就是在选区第一个节点之前的同级节点总数。(这些节点都是 anchorNode 的子节点)。<br>3.focusOffset 以此类推。</p>
+<h5 id="主要方法"><a href="#主要方法" class="headerlink" title="主要方法"></a>主要方法</h5><p>getRangeAt(index)：从当前 Selection 对象中根据下标index返回相应的 Range 对象。</p>
+<p>addRange(range)：将一个 range 添加到 selection 当中。</p>
+<p>removeRange(range)：从当前 selection 中移除一个 range。</p>
+<h4 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h4><p>通常情况下我们不会直接操作 Selection 对象，而是操作 Seleciton 对象下所对应的 Range 对象，它才是我们操作光标的重点。</p>
+<blockquote>
+<p>Range表示包含节点和部分文本节点的文档片段。</p>
+</blockquote>
+<p>Range 可以用 Document 对象的 createRange 方法创建，也可以用 Selection 对象的getRangeAt 方法取得。另外，可以通过构造函数 Range() 来获得一个 Range 。</p>
+<h5 id="主要属性-1"><a href="#主要属性-1" class="headerlink" title="主要属性"></a>主要属性</h5><p>startContainer 和 endContainer：范围的起点和终点所在的节点（Node）。</p>
+<p>startOffset 和 endOffset：range 起点和终点位置的偏移量。</p>
+<p>collapsed：标识选区是否闭合（此时为单个光标）。</p>
+<h5 id="主要方法-1"><a href="#主要方法-1" class="headerlink" title="主要方法"></a>主要方法</h5><p>setStart(startContainer, startOffset)：设置 Range 的起点。</p>
+<p>setEnd(endContainer, endOffset)：设置 Range 的终点。</p>
+<p>selectNode(referenceNode)：设定一个包含节点和节点内容的 Range。</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><pre><code class="javascript">// 获取当前光标选区
+function getSelection () {
+    // 获取selection对象
+    const selection = window.getSelection ? window.getSelection() : document.getSelection()
+    // 从selection中获取第一个Range对象
+    const range = selection.getRangeAt(0)
+    let startNode = range.startContainer
+    let endNode = range.endContainer
+    // 兼容IE11 node.contains(textNode) 永远 return false 的bug
+     startNode = startNode.nodeType === Node.TEXT_NODE ? startNode.parentNode : startNode
+    endNode = endNode.nodeType === Node.TEXT_NODE ? endNode.parentNode : endNode
+    // 光标选区是否在编辑器内
+    if (editorNode.contains(startNode) &amp;&amp; editorNode.contains(endNode)) {
+        return range
+    }
+    return null
+}
+
+// 设置光标选区
+function setSelection (selectNode, startPos, endPos) {
+    // 首先获取selection对象并清除当前的Range
+   const selection = window.getSelection ? window.getSelection() : document.getSelection()
+    selection.removeAllRanges()
+    // 重新设置Range
+    const range = document.createRange()
+    range.setStart(selectNode, startPos)
+    range.setEnd(selectNode, endPos)
+    selection.addRange(range)
+}
+</code></pre>
+<p>有了这两个方法，我们只需要为编辑器注册 mouseup keyup mouseout 等事件监听光标选区变化以及当对内容进行操作的时候设置新的光标选区。</p>
+<h2 id="操作内容"><a href="#操作内容" class="headerlink" title="操作内容"></a>操作内容</h2><p>实现富文本编辑器，我们就要能够有修改文档内容的能力，从常规的设置文字格式、添加标题，插入超链接等，到高级的插入图片、视频及自定义元素等丰富多样的操作。在众多编辑器中，实现这些功能的主要方式有两种。</p>
+<h4 id="document-execCommand"><a href="#document-execCommand" class="headerlink" title="document.execCommand()"></a>document.execCommand()</h4><p>常见的富文本编辑器插件，如 CKEditor、UEditor、TinyMCE 等，实现与编辑区进行交互的主要方式是利用 document.execCommand API。该方法允许运行指定指令来操作可编辑区域的光标选区处的内容，浏览器把大部分我们想到的富文本编辑器需要的功能都实现了。</p>
+<h5 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h5><pre><code class="javascript">bool = document.execCommand(aCommandName, aShowDefaultUI, aValueArgument)
+</code></pre>
+<ul>
+<li>返回值：布尔类型，false 表示操作不支持或未被启用。</li>
+<li>aCommandName：字符串类型，一个指令名称，如“bold”、“fontSize”，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand#%E5%91%BD%E4%BB%A4" target="_blank" rel="noopener">可用指令列表</a> 。</li>
+<li>aShowDefaultUI：布尔类型，是否为该指令提供用户界面，通常设为false，大部分浏览器未实现该功能。</li>
+<li>aValueArgument：某些指令的额外参数（例如 insertImage 指令需要提供插入的图片的 url），默认为null。</li>
+</ul>
+<h5 id="相关方法"><a href="#相关方法" class="headerlink" title="相关方法"></a>相关方法</h5><ul>
+<li><p>document.queryCommandEnabled(String command): Boolean 可查询浏览器中指定指令是否可用，可用于工具栏置灰。</p>
+</li>
+<li><p>document.queryCommandState(String command): Boolean 可判断当前光标选区位置是否已经应用了指定指令，可用与工具栏高亮。</p>
+</li>
+</ul>
+<h5 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h5><p>浏览器自带的这套API虽然功能强大且使用方便，但在于不同浏览器仍有不少小差异，表现在剪切板API，换行处理，键盘事件，指令行为等等的不一致上。<br>如 bold 指令，IE 和 Opera 会使用 &lt;strong> 标签包裹文本，而 Safari 和 Chrome则 使用 &lt;b> 标签，firefox 使用 &lt;span>。</p>
+<p>另一个问题在于数据的一致性。如加粗，下面的几种 DOM 结构的视觉表现是等效的：</p>
+<pre><code class="html">&lt;!--正常--&gt;
+&lt;p&gt;富文本&lt;b&gt;编辑器&lt;/b&gt;&lt;/p&gt;
+&lt;!--分离的 b 标签--&gt;
+&lt;p&gt;富文本&lt;b&gt;编&lt;/b&gt;&lt;b&gt;辑器&lt;/b&gt;&lt;/p&gt;
+&lt;!--嵌套的 b 标签--&gt;
+&lt;p&gt;富文本&lt;b&gt;&lt;b&gt;编辑器&lt;/b&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;!--空的 b 标签--&gt;
+&lt;p&gt;富文本&lt;b&gt;编&lt;/b&gt;&lt;b&gt;&lt;/b&gt;&lt;b&gt;辑器&lt;/b&gt;&lt;/p&gt;
+&lt;!--span 代替 b 标签--&gt;
+&lt;p&gt;富文本&lt;span style=&quot;font-weight: bold&quot;&gt;编辑器&lt;/span&gt;&lt;/p&gt;
+</code></pre>
+<p>虽然看上去一样，但对它们的编辑行为会产生显著的区别。contentEditable 编辑器的设计原则之一是编辑器内的一切内容皆可自由编辑，这会带来很多问题，用户有太多方法可以破坏你预设的结构，这不仅会导致编辑器出现混乱，更有可能带了一些安全方面的问题。</p>
+<h4 id="自定义渲染"><a href="#自定义渲染" class="headerlink" title="自定义渲染"></a>自定义渲染</h4><p>为了解决前述的这些问题，MediumEditor、draft.js、Slate 等编辑器采用了另一种方法。</p>
+<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><ul>
+<li>首先实现自定义的 Model，它用来描述编辑器每种内容类型的合法 DOM 结构。</li>
+<li>编辑时基于这个 Model 去维护一个 State，即对当前富文本内容结构化的对象（类似 Virtual DOM）。</li>
+<li>对编辑器的操作即是对这个 State 的修改，然后再把 State 通过 Model 的规则映射成 DOM。</li>
+</ul>
+<p>这就严格控制了 DOM 的渲染和行为，使得每个操作将保证它的一致性，对于所有视觉上相等的内容有相同的 DOM 结构。</p>
+<p><img src="https://i.loli.net/2018/08/26/5b823632e7fb3.jpg" alt="draft"></p>
+<h5 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h5><p>如图所示，这是一个 Prosemirror 中标准的 Node Model 数据结构，它清楚的描述了编辑器中标题内容的 DOM 解析和渲染的方式。<br><img src="https://i.loli.net/2018/08/26/5b8236331353b.jpeg" alt="model"></p>
+<p>下面则是一处编辑器中的 State 内容与实际 DOM 结构的映射。</p>
+<p>DOM结构：<br><img src="https://i.loli.net/2018/08/26/5b823632f2261.jpeg" alt="dom"></p>
+<p>标题节点：<br><img src="https://i.loli.net/2018/08/26/5b82363315cd1.jpeg" alt="node1"></p>
+<p>加粗节点：<br><img src="https://i.loli.net/2018/08/26/5b823633164dd.jpeg" alt="node2"></p>
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><p>由于用户对编辑器的各种操作都将转化为对 State 的修改并最终映射为 DOM，使得对编辑器的数据变得非常可控，有助于对内容进行检查和过滤。通过结合 Immutable 数据更能方便实现撤销重做等功能。</p>
+<p>另一个好处在于多端数据同步，它可以适用于多人在线协作的业务场景。由于编辑器数据都存储在一个自定义数据结构，用户操作实际影响的是该数据结构，我们便可以较为容易的通过锁和 diff 算法来合并短时间内的多次修改。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>到这里，你可能觉得已经可以做出一个像模像样的富文本编辑器了。想想还挺激动的，但是呢，富文本编辑器的坑远远比想象中要大（比如我就经常被 QA 和 PM教做人：“别人家的编辑器可以xxxx，你怎么不行”）。<br>在实际做的时候仍可能遇到各种各样奇怪的 case，比如从外部复制粘贴过来的内容，中文输入法引起的异常行为，大文档（尤其表格）的性能问题，各种安全问题，还有就是浏览器兼容性，移动端就更别说了。<br>如果是要做一个编辑器插件，那如何分离出不同职责的模块，怎么抽象出可扩展的接口，方便扩充功能，也是要思考的问题。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://medium.engineering/why-contenteditable-is-terrible-122d8a40e480" target="_blank" rel="noopener">Why ContentEditable is Terrible</a><br><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Selection" target="_blank" rel="noopener">Selection - Web API 接口 | MDN</a><br><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Range" target="_blank" rel="noopener">Range - Web API 接口 | MDN</a><br><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand" target="_blank" rel="noopener">document.execCommand - Web API 接口 | MDN</a><br><a href="https://juejin.im/post/5a698cdb518825733e60a666" target="_blank" rel="noopener">富文本编辑器初探 - 掘金</a><br><a href="https://zhuanlan.zhihu.com/p/37051858?edition=yidianzixun&amp;utm_source=yidianzixun&amp;yidian_docid=0J5z1tQQ" target="_blank" rel="noopener">深入浅出contenteditable富文本编辑器</a><br><a href="https://juejin.im/post/59e6fc9951882578d503952c" target="_blank" rel="noopener">Slate.js - 革命性的富文本编辑框架 - 掘金</a></p>
+</section><nav id="post-nav"><span class="prev"></span><span class="next"><a href="/React-v16-3-小记/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="mailto:wu@minsky.me"><i class="fa fa-envelope"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Minsky</i></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
