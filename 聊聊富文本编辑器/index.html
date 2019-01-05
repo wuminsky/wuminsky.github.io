@@ -127,12 +127,11 @@ function setSelection (selectNode, startPos, endPos) {
 <p><img src="https://i.loli.net/2019/01/01/5c2b1bcc0a02d.jpeg" alt="DOM"></p>
 <p>ProseMirror 中结构的表示：</p>
 <p><img src="https://i.loli.net/2019/01/01/5c2b1bcc1836f.jpeg" alt="PM"></p>
-<p>在 ProseMirror 中，文本内容被建模为扁平的序列，文本的标记作为元数据附加到节点上，这样我们便不用关心各种各样的嵌套问题。</p>
-<p>下面是 ProseMirror 中被称为 Schema 的数据结构，即上文说的 Model，它描述了编辑器中每种内容对应的解析和渲染的方式，也就是 DOM 结构和 ProseMirror 结构的转换。</p>
+<p>下面即 ProseMirror 中被称为 Schema 的数据结构，即上文说的 Model，描述编辑器中每种内容对应的解析和渲染的方式，也就是 DOM 结构和 ProseMirror 结构的转换规则，编辑器会根据 Schema 去做校验和相应标签过滤和分割。</p>
 <p><img src="https://i.loli.net/2018/08/26/5b8236331353b.jpeg" alt="model"></p>
-<p><img src="https://i.loli.net/2019/01/01/5c2b20dea3129.jpeg" alt="map"></p>
 <p>假设当我们按下删除键删除文本中的两个字时，ProseMirror 会捕捉我们的操作并发起一个 transcation，改变当前文档表示的 ProseMirror 结构，最后再更新到实际的 DOM 上。</p>
 <p><img src="https://i.loli.net/2019/01/01/5c2b1fb37764e.jpeg" alt="tr"></p>
+<p>如上图所示，在 ProseMirror 中，编辑器内容被建模为扁平的索引，而不同于 DOM 的树形结构，这样我们便不用关心各种各样的嵌套问题。</p>
 <pre><code class="javascript">const tr = new Transform(doc)
 tr.delete(3, 5)
 </code></pre>
